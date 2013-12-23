@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="126"
+   height="126"
+   id="svg3778"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="money_bag_ico.svg">
+  <defs
+     id="defs3780">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4672"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4668"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4654"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4650"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4646"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4642"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4638"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#065318"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.1190476"
+     inkscape:cx="39.682274"
+     inkscape:cy="68.651095"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1044"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:snap-grids="false"
+     inkscape:snap-page="true"
+     inkscape:object-nodes="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3786"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="5.246048px"
+       originy="70.013946px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3783">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(5.246048,23.986055)">
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       d="M 73.23766,-5.1998016 C 50.481075,-9.7467755 28.168186,3.2945875 19.48282,24.754546 L 60.290438,42.213651 86.108633,-0.55666256 C 82.154158,-2.6879407 77.852978,-4.2776188 73.23766,-5.1998016 z M 94.67142,5.3926648 69.949915,46.342575 107.41104,62.368194 c 1.27312,-3.062644 2.27578,-6.286053 2.95223,-9.671519 3.65441,-18.289508 -2.93763,-36.145108 -15.69185,-47.3040102 z"
+       id="path4628"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect4700"
+       width="112.88188"
+       height="15.439951"
+       x="16.906702"
+       y="20.394234"
+       transform="matrix(0.92018905,0.39147429,-0.34643498,0.93807399,0,0)"
+       ry="0.94083351" />
+  </g>
+</svg>

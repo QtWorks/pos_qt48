@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="126"
+   height="126"
+   id="svg3778"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="plus_minus_ico.svg"
+   inkscape:export-filename="/home/art/Desktop/refresh.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs3780">
+    <filter
+       id="filter3199"
+       inkscape:menu-tooltip="Draws a black outline around"
+       inkscape:menu="ABCs"
+       inkscape:label="Black outline"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3201"
+         stdDeviation="2"
+         in="SourceAlpha"
+         result="result0" />
+      <feComposite
+         id="feComposite3203"
+         in2="result0"
+         result="result3"
+         operator="arithmetic"
+         in="SourceGraphic"
+         k2="1"
+         k3="10" />
+      <feComposite
+         id="feComposite3205"
+         in2="result3"
+         k2="1"
+         operator="in"
+         in="result3"
+         result="result4" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#065318"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.4354991"
+     inkscape:cx="41.732793"
+     inkscape:cy="58.726133"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1025"
+     inkscape:window-x="-2"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:snap-page="true"
+     inkscape:snap-center="true"
+     inkscape:snap-nodes="false"
+     inkscape:snap-bbox="true"
+     inkscape:snap-grids="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3786"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="5.246048px"
+       originy="70.013946px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3783">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(5.246048,23.986055)">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="74.878128"
+       y="56.089218"
+       id="text3007"
+       sodipodi:linespacing="125%"
+       transform="translate(-5.246048,-23.986055)"><tspan
+         sodipodi:role="line"
+         id="tspan3009"
+         x="74.878128"
+         y="56.089218" /></text>
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       d="m 51.011776,-9.0122402 c -0.946999,0 -1.710702,0.711415 -1.710702,1.593574 l 0,22.0288112 -23.647932,0 c -0.946999,0 -1.710702,0.711415 -1.710702,1.593574 l 0,12.56111 c 0,0.882158 0.763703,1.593573 1.710702,1.593573 l 23.647932,0 0,22.028811 c 0,0.882158 0.763703,1.593574 1.710702,1.593574 l 13.484352,0 c 0.946999,0 1.710702,-0.711416 1.710702,-1.593574 l 0,-22.028811 23.647932,0 c 0.946996,0 1.710702,-0.711415 1.710702,-1.593573 l 0,-12.56111 c 0,-0.882159 -0.763706,-1.593574 -1.710702,-1.593574 l -23.647932,0 0,-22.0288112 c 0,-0.882159 -0.763703,-1.593574 -1.710702,-1.593574 l -13.484352,0 z"
+       id="rect4721"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect4721-9"
+       width="68.445213"
+       height="15.04675"
+       x="23.531345"
+       y="71.993378"
+       ry="1.5214133" />
+  </g>
+</svg>
