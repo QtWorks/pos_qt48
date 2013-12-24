@@ -59,7 +59,6 @@ Item {
         if( from_t && from_t !== sticket && from_t.selected_id > -1) {
 
             var item = from_t.orderListModel.get( from_t.selected_id );
-            console.log( item + " " + item.item_name );
             if( item.item_is_sub ) return;
 
             from_t.ticketSubTotal -= item.item_total;

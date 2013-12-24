@@ -222,14 +222,12 @@ Rectangle {
             anchors.right: parent.right;
             icon: "x_ico.svg";
             label: "Back";
-            textColor: Colors.yellow3;//"black";
-            color: "#00000000";//Colors.yellow3;
+            textColor: Colors.yellow3;
             width: 300;
             height: 300;
             y: height;
             font: "Chunkfive";
             pixelSize: height * 0.15;
-            radius: 10;
             Behavior on y { NumberAnimation { duration: 180; easing.type: Easing.InOutCirc;} }
             onButtonClick : { back() }
             function back() {

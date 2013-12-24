@@ -29,7 +29,8 @@ Item {
                 height: order.height;
                 label: "";
                 clip: true;
-                hoverEnabled: true;
+                sensitive: true;
+                hoverEnabled: false;
 
                 Text {
                     id: order_index;
@@ -103,6 +104,11 @@ Item {
                 }
 
                 onButtonClick: {
+                    if( selected_id == item_id ) {
+                        orderroot.itemLongClick( item_menuid, item_parentid );
+                        return;
+                    }
+
                     ticketView.positionViewAtIndex( item_id - 1, ListView.Beginning );
                     selected_id = item_id;
                     item = orderListModel.get( item_id );

@@ -9,6 +9,7 @@ FadeView {
     property alias accept_text : accept_btn.label;
     property alias reject_text : reject_btn.label;
     property alias total : cash_input.total;
+    property double hint : 0.0;
     default property alias children : content.children;
 
     signal accept();
@@ -17,7 +18,7 @@ FadeView {
     onHalfShown : {
         pay_action_slide.show();
         cash_input.clear();
-        cash_input.show();
+        cash_input.show( hint );
         input.show();
     }
 

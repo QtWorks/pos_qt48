@@ -20,6 +20,7 @@ Slide {
             radius: 10;
             onButtonClick : {
                 cashView.color = Colors.make( color, "99" );
+                cashView.hint = 0;
                 cashView.show();
                 cashmode = true;
             }
@@ -37,6 +38,7 @@ Slide {
             onButtonClick : {
                 cashView.color = Colors.make( color, "99" );
                 cashmode = false;
+                cashView.hint = ticket.ticketTotal;
                 cashView.show();
             }
         }
