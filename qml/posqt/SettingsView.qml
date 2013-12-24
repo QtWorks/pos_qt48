@@ -1,5 +1,6 @@
 import QtQuick 1.1;
 import "colors.js" as Colors;
+import "app.js" as App;
 
 Item {
     id: root;
@@ -105,8 +106,9 @@ Item {
     }
 
     function load( component ) {
-        loader.source = "";
-        loader.source = component;
+        //loader.source = "";
+        //loader.source = component;
         //loader.setSource( component, { "parent" : root } );
+        App.load_subview( component );
     }
 }

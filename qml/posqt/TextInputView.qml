@@ -30,7 +30,6 @@ FadeView {
     function key_click( key )
     {
         if( text.length === root.max ) {
-            console.log( text.length + " " + root.max );
             return;
         }
 
@@ -109,7 +108,7 @@ FadeView {
             font: "Chunkfive";
             height: parent.height * 0.95;
             width: parent.height * 0.95;
-            onButtonClick: { console.log(root.text); accept( root.text ); }
+            onButtonClick: { accept( root.text ); }
         }
     }
 }

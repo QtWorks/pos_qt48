@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import "colors.js" as Colors;
+import "app.js" as App;
 
 FadeView {
     id: root;
@@ -10,11 +11,19 @@ FadeView {
     dimColor: "#cc000000";
     property variant cb : null;
 
+    onHidden : {
+        App.load_subview("");
+    }
+
     onHalfShown : {
     }
 
     onClicked : {
         hide();
+    }
+
+    Component.onCompleted : {
+        show();
     }
 
     Image {

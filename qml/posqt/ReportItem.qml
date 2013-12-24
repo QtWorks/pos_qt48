@@ -11,6 +11,7 @@ Item {
         label: "";
         color : "#00000000";
         pointSize : 30;
+        sensitive: true;
         font : "Molot";
         radius: 5;
         onButtonClick : report_item_click(  item_id, item_label, item_total,

@@ -29,7 +29,6 @@ Item {
                 height: order.height;
                 label: "";
                 clip: true;
-                act_on_cancel: true;
 
                 Text {
                     id: order_index;

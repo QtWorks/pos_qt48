@@ -5,6 +5,7 @@ Qt.include( "app_user.js" );
 var _API;
 var _initialized = false;
 var _root;
+var admin_console;
 var _loader;
 var bg_filepath = "rok_black.png";
 var table_Model;
@@ -164,4 +165,12 @@ function show_osk( cb ) {
 
 function hide_osk() {
     _root.hide_osk();
+}
+
+function admin_console_set_interactive( interactive ) {
+    admin_console.set_interactive( interactive );
+}
+
+function load_subview( component ) {
+    _root.load_subview( component );
 }

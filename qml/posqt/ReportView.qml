@@ -234,7 +234,12 @@ Item {
         dimColor: Colors.make( "#000000", "dd" );
 
         onHalfShown : {
+            App.admin_console_set_interactive( false );
             detail_slide.show();
+        }
+
+        onHidden : {
+            App.admin_console_set_interactive( true );
         }
 
         onClicked : {

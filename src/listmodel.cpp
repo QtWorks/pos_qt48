@@ -52,6 +52,7 @@ void ListModel::appendRows(const QList<ListItem *> &items)
     m_list.append(item);
   }
   endInsertRows();
+  emit countChanged();
 }
 
 void ListModel::silentAppendRow(ListItem* item)
@@ -66,6 +67,7 @@ void ListModel::insertRow(int row, ListItem *item)
   connect(item, SIGNAL(dataChanged()), SLOT(handleItemChange()));
   m_list.insert(row, item);
   endInsertRows();
+  emit countChanged();
 }
 
 void ListModel::handleItemChange()
@@ -101,6 +103,7 @@ void ListModel::clear()
     this->m_list.clear();
     this->m_list = QList<ListItem*>();
     endRemoveRows();
+    emit countChanged();
     //endResetModel();
 }
 
@@ -111,6 +114,7 @@ bool ListModel::removeRow(int row, const QModelIndex &parent)
   beginRemoveRows(QModelIndex(), row, row);
   delete m_list.takeAt(row);
   endRemoveRows();
+  emit countChanged();
   return true;
 }
 
@@ -123,6 +127,7 @@ bool ListModel::removeRows(int row, int count, const QModelIndex &parent)
     delete m_list.takeAt(row);
   }
   endRemoveRows();
+  emit countChanged();
   return true;
 }
 

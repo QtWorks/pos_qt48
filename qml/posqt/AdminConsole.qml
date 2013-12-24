@@ -12,8 +12,16 @@ Item {
     property color headerColor: Colors.neon_blue;
     property bool active : false;
 
+    function set_interactive( interactive ) {
+        parallax.interactive = interactive;
+    }
+
     function viewChange(){
         indicator.moveTo(parallax.position);
+    }
+
+    Component.onCompleted : {
+        App.admin_console = adminConsole;
     }
 
     ParallaxView {

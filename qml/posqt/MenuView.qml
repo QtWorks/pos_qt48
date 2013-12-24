@@ -162,7 +162,11 @@ Item {
             delegate: itemdelegate;
             clip: true;
             model: MenuLib.api.itemModel;
-            flickableDirection: Flickable.VerticalFlick;
+            interactive: MenuLib.api.itemModel.count > 16;
+            //flickableDirection: Flickable.VerticalFlick;
+            //pressDelay: 0;
+            boundsBehavior: Flickable.StopAtBounds;
+            flow: GridView.TopToBottom;
             /*add : Transition {
                 NumberAnimation { properties: "x"; from: gridbox.width; duration: 300; easing.type: Easing.InOutCirc; }
                 NumberAnimation { property: "opacity"; from: 0; to: 1.0; duration: 600; easing.type: Easing.InOutCirc; }
@@ -175,6 +179,7 @@ Item {
                     color : Colors.indexMenu( MenuLib.map_cat_color(item_catid) );
                     width: itemgrid.width * 0.24;
                     height: width;
+                    //sensitive: true;
                     //act_on_cancel: true;
                     onItemClicked : {
                         item_actions.hide();
@@ -313,6 +318,7 @@ Item {
         property: "x";
         from: -width;
         to: 0;
+        reshow: true;
         duration: 300;
         onClicked : { hide(); }
         Text {

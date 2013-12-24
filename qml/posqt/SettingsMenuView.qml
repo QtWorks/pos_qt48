@@ -16,6 +16,9 @@ FadeView {
     dimColor: Colors.make( "#000000", "cc" );
     duration: 400;
 
+    onHidden : {
+        App.load_subview("");
+    }
 
     onHalfShown : {
         cat_name = "";
@@ -33,6 +36,10 @@ FadeView {
         item_edit_slide.hide(200);
         category_list_slide.hide(400);
         whitebar_bottom.hide(300);
+    }
+
+    Component.onCompleted : {
+        show();
     }
 
     function change_item_name( newname )
@@ -84,6 +91,11 @@ FadeView {
                 id: category_list;
                 cellHeight: parent.height/3;
                 cellWidth: parent.width/3;
+                snapMode: GridView.SnapOneRow;
+                flow: GridView.TopToBottom;
+                boundsBehavior: Flickable.StopAtBounds;
+                interactive: model.count > 9;
+                //pressDelay: 0;
 
                 Component {
                     id: category;
@@ -91,7 +103,8 @@ FadeView {
                         height: category_list.height/3 - 10;
                         width: category_list.width/3 - 10;
                         color: Colors.green4;
-                        act_on_cancel: true;
+                        //sensitive: true;
+                        //act_on_cancel: true;
                         radius: 3;
                         onItemClicked: {
                             if( item_name === "__ADD_ITEM__" ) {
@@ -111,10 +124,7 @@ FadeView {
                                     item_edit_slide.show();
                             }
 
-                            console.log( item_name );
-
                             if( Settings.menuitem_modifiable(item_id) ) {
-                                console.log( "MENUITEM CLICK" );
                                 item_edit_slide.show();
                                 Settings.select( item_id );
                             }
@@ -159,14 +169,13 @@ FadeView {
         y: -height;
         from: -height;
         to: 0;
-        width: App.screen_w * 0.2;
+        width: App.screen_w * 0.3;
         height: category_list_slide.height;
-        color: "black";
+        color: "#aaffffff";
         duration: 400;
         reshow: true;
 
         onShown : {
-            console.log( "edit_slide shown" );
         }
 
         Button {
@@ -192,8 +201,8 @@ FadeView {
                 color: "white";//Colors.tran_toolbar;
 
                 text: Settings.api.item_name;
-                font.family: "Helvetica";
-                font.pixelSize: (Settings.api.item_name.length > 50) ? parent.height * 0.09 : parent.height * 0.11;
+                font.family: "Chunkfive";
+                font.pixelSize: (Settings.api.item_name.length > 50) ? parent.height * 0.15 : parent.height * 0.18;
                 font.capitalization: Font.AllUppercase;
                 wrapMode: Text.WordWrap;
                 horizontalAlignment: Text.AlignRight;
@@ -219,7 +228,7 @@ FadeView {
             radius: 3;
             color: Colors.blue6;
             width: parent.width * 0.95;
-            height: parent.height * 0.11;
+            height: parent.height * 0.2;
 
             onButtonClick : {
                 Settings.name_change_cb = change_item_name;
@@ -228,7 +237,7 @@ FadeView {
 
             Text {
                 text: Settings.api.item_price.toFixed(2);
-                font.family: "Helvetica";
+                font.family: "Molot";
                 font.pixelSize: parent.height * 0.3;
                 color: "white";
                 anchors.right: parent.right; anchors.rightMargin: parent.width * 0.1;
@@ -254,14 +263,14 @@ FadeView {
             color: Colors.red2;
             pixelSize: parent.height * 0.03;
             width: parent.width * 0.95;
-            height: parent.height * 0.11;
+            height: parent.height * 0.2;
 
-            onButtonClick: App.choice( "Delete " + Menu.api.item_name + "?", onItemDelete );
+            onButtonClick: App.choice( "Delete " + Settings.api.item_name + "?", onItemDelete );
 
             Text {
                 text: "Delete"
-                font.family: "Helvetica";
-                font.pixelSize: parent.height * 0.3;
+                font.family: "Molot";
+                font.pixelSize: parent.height * 0.32;
                 color: "white";
                 anchors.right: parent.right; anchors.rightMargin: parent.width * 0.1;
                 anchors.verticalCenter: parent.verticalCenter;

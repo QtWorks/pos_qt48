@@ -54,15 +54,19 @@ Rectangle {
     function disableNavbar() {  actionArea.enabled = false; }
     function hideNavbar()    {  navback.y = navback.height; }//actions.height = 0; }
     function navBack()       {  navback.back(); }
-    function hide_choice()   { noticePopup.hide(); action_slider.showing = false; }
+    function hide_choice()   { noticePopup.hide(); } //action_slider.showing = false; }
     function show_osk( callback )         { App.keyboard_callback = callback; keyboard.show(); }
     function hide_osk()         { keyboard.hide(); }
+    function load_subview( component ) {
+        subview.source = "";
+        subview.source = component;
+    }
 
     function choice( text ) {
         if( action_slider.showing ) {
             noticePopup.message = text;
-            action_slider.show();
             noticePopup.showChoice = true;
+            noticePopup.show();
             return;
         }
 
@@ -147,6 +151,12 @@ Rectangle {
         //asynchronous: true;
         //focus: true;
         visible: ( status == Loader.Ready );
+    }
+
+    Loader {
+        id: subview;
+        visible: ( status == Loader.Ready );
+        source: "";
     }
 
     OnScreenKeyboard {
@@ -321,7 +331,8 @@ Rectangle {
                     wrapMode: Text.Wrap;
                     elide: Text.ElideRight;
                     color: "white";
-                    font.pixelSize: parent.height * 0.20;
+                    font.pixelSize: (text.length > 50) ? parent.height * 0.1 : parent.height * 0.2;
+                    maximumLineCount: 5;
                     verticalAlignment: Text.AlignVCenter;
                     horizontalAlignment: Text.AlignHCenter;
                 }

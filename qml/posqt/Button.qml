@@ -30,6 +30,8 @@ Item {
     property alias act_on_cancel : buttonMouseArea.cancel;
     property alias icon_width : icon.width;
     property alias icon_height : icon.height;
+    property alias preventStealing: buttonMouseArea.preventStealing;
+    property bool  sensitive: false;
 
     //Visual modifiers
     property bool orientIconLeft : false;
@@ -99,8 +101,8 @@ Item {
 
         property bool cancel : false;
 
-        onEntered:{
-            /*if( !colorani.running ) {
+        onEntered: if(sensitive) buttonClick();/*{
+            if( !colorani.running ) {
                 colorani.duration = 200;    MouseArea {
         id: ticketMouseArea;
         visible: (split_mode || virtual);
@@ -120,8 +122,8 @@ Item {
     }
                 colorani.to = Qt.darker( backdrop.color, 1.25 );
                 colorani.start();
-            }*/
-        }
+            }
+        } */
 
         onExited:{
             //backdrop.color = Qt.lighter(backdrop.color, 2);//color;

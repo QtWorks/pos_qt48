@@ -25,6 +25,7 @@ Rectangle {
 
         LoginPad {
             id: pad;
+            bgColor: "white";
             property string passcode: "";
             onClickStateChanged : {
                 if(buttonID == 11){

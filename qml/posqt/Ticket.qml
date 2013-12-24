@@ -153,6 +153,8 @@ Item {
             model: orderListModel;//TicketInfo.ticketListModel;
             spacing: 5;
             delegate: ticketItemDelegate;
+            boundsBehavior: Flickable.StopAtBounds;
+            pressDelay: 0;
 
             transitions : [
                 Transition {

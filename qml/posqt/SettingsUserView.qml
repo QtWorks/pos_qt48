@@ -25,6 +25,14 @@ FadeView {
         user_edit_slide.hide();
     }
 
+    onHidden : {
+        App.load_subview("");
+    }
+
+    Component.onCompleted : {
+        show();
+    }
+
     Image {
         source : "hardhat_ico.svg";
         sourceSize.width: parent.height * 0.25;
@@ -355,6 +363,17 @@ FadeView {
 
     LoginPad {
         id: password_input;
+        bgColor: "white";
+
+        onClickStateChanged : {
+            if( buttonID != 10  && buttonID != 11) {
+                maskOpacity = 1.0;
+                mask += buttonID;
+                return;
+            }
+            maskOpacity = 0.0;
+            mask = "";
+        }
 
         onOkClick : {
             Settings.api.set_user_password( _password );

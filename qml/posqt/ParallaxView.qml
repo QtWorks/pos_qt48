@@ -5,7 +5,7 @@ Item {
     property int currentIndex : 0;
     default property alias content : visualModel.children;
     property real position : 0.0;
-
+    property alias interactive : list.interactive;
 
     signal scrollTo(int index)
     onScrollTo : {

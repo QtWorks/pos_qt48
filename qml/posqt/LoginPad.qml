@@ -11,7 +11,7 @@ Item {
     property bool buttonHighlight: true;
     property bool buttonBackdrop: false;
     property int buttonPointSize: 35;
-    property color bColor : Colors.make( Colors.blue3, "aa" );//"#299DD6";
+    property color bColor : Colors.make( Colors.blue3, "cc" );//"#299DD6";
     property int buttonWidth : width * 0.1;//150;
     property int buttonHeight: width * 0.1;//150;
     property int buttonRadius: 5;
@@ -302,10 +302,12 @@ Item {
         opacity: maskOpacity;
         Behavior on opacity { PropertyAnimation { duration: 200; }}
         Text {
-            anchors.centerIn: parent;
-            color: "white";
+            //anchors.centerIn: parent;
+            anchors.horizontalCenter: parent.horizontalCenter;
+            anchors.bottom: parent.top;
+            color: Colors.blue3;//"white";
             font.pointSize: 32;
-            font.family: "Helvetica";
+            font.family: "Chunkfive";
             font.weight: Font.Light;
             font.letterSpacing: 6;
             text: mask;
