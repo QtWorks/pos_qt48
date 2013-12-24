@@ -223,7 +223,7 @@ Item {
             anchors.bottom: parent.bottom;
             color: "white";
             visible: User.api.cashedin;
-            text: "Pending: $" + User.api.pending_sales.toFixed(2);
+            text: "Pending: $" + (User.api.pending_sales - User.api.credit_received).toFixed(2);
         }
 
         Text {

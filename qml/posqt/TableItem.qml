@@ -1,6 +1,7 @@
 import QtQuick 1.1
 
 Button {
+    sensitive: true;
     Image {
         id: icon;
         anchors.bottom: sid.top; anchors.bottomMargin: parent.height * 0.01;

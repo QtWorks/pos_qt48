@@ -30,6 +30,7 @@ Item {
     property alias act_on_cancel : buttonMouseArea.cancel;
     property alias icon_width : icon.width;
     property alias icon_height : icon.height;
+    property alias hoverEnabled: buttonMouseArea.hoverEnabled;
     property alias preventStealing: buttonMouseArea.preventStealing;
     property bool  sensitive: false;
 

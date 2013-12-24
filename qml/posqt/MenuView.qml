@@ -441,7 +441,7 @@ Item {
                 pixelSize: height * 0.15;
 
                 onButtonClick : {
-                    selectCategory( "", ticket.item.item_parentid );
+                    Methods.selectCategory( "", ticket.item.item_parentid );
                     navigateTo( ticket.item.item_menuid );
                     navigateTo( ticket.item.item_menuid );
                 }

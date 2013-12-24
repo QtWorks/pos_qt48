@@ -29,6 +29,7 @@ Item {
                 height: order.height;
                 label: "";
                 clip: true;
+                hoverEnabled: true;
 
                 Text {
                     id: order_index;
