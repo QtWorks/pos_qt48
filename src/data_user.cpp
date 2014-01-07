@@ -1,4 +1,7 @@
 #include "data.h"
+#include "server/server.h"
+#include "connect.h"
+
 #include <utility>
 #include <algorithm>
 
@@ -113,10 +116,19 @@ int DataHandler::clockout_user(User* user)
         user->clockedin = false;
 
         //add the resulting timecard
-        for( auto& timecard : res->items ) {
-            seconds = timecard->property<int>("seconds");
-            user->add_timecard( std::move( timecard ) );
+        for( auto& tm : res->items ) {
+            seconds = tm->property<int>("seconds");
+            user->add_timecard( std::move( tm ) );
+            /*
+            user->timecard.label = user->first_name;
+            user->timecard.start = tm->property<std::string>("start");
+            user->timecard.end = tm->property<std::string>("end");
+            user->timecard.start_e = tm->property<int>("start_epoch");
+            user->timecard.end_e = tm->property<int>("end_epoch");
+            */
         }
+
+        //printer.print(&user->timecard);
 
         save_user_data( user );
     }
@@ -145,5 +157,10 @@ void DataHandler::update_user_sale_totals(User* user)
         user->total_change = totals->property<double>("total_change");
         user->pending_sales_total = totals->property<double>("pending_sales");
     }
+}
+
+void DataHandler::print_session(Session *session)
+{
+    printer.print( session );
 }
 

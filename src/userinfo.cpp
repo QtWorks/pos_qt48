@@ -90,6 +90,7 @@ void UserInfo::start_staff_bank()
     if( user->cashedin )
         return;
 
+    user->session_info.type = "Staff Bank";
     user->staff_bank = 1;
     cashin();
 
@@ -104,6 +105,7 @@ void UserInfo::make_cashier(double start_amount)
     if( user->cashedin )
         return;
 
+    user->session_info.type = "Cashier";
     user->bank = start_amount;
     emit bankChanged();
 
@@ -122,6 +124,9 @@ void UserInfo::cashin() {
 
         user->session = static_cast<int>(time(nullptr));
 
+        time(&user->session_info.start_time);
+        user->session_info.start_amount = user->bank;
+
         refresh();
     }
 }
@@ -132,13 +137,34 @@ double UserInfo::cashout(double cash_count) {
     if( user->cashedin ) {
         user->cashedin = 0;
 
+        if( user->bank ) {
+            user->session_info.type = "Cashier";
+            user->session_info.start_amount = user->bank;
+        }
+        else {
+            user->session_info.type = "Staff Bank";
+            user->session_info.start_amount = 0.0f;
+        }
+        if( user->bank || user->total_sales > 0.0099f ) {
+            user->session_info.total_sales = user->total_sales;
+            user->session_info.credit_total = user->credit_received;
+            user->session_info.tendered_cash = user->cash_received;
+            user->session_info.cash_count  = cash_count;
+            user->session_info.short_total = diff;
+            user->session_info.name = user->first_name;
+            user->session_info.id = user->session;
+            user->session_info.user_id = user->id;
+            user->session = 0;
+            data.print_session( &user->session_info );
+        }
+
         user->bank = 0;
         user->staff_bank = 0;
-        user->session = 0;
 
         emit bankChanged();
         emit cashedinChanged();
         emit staff_bankChanged();
+
 
         data.save_user_data( user );
     }

@@ -1,4 +1,5 @@
 #include "server.h"
+#include "../connect.h"
 
 template<> std::unique_ptr<Result>
 DataServer::command(ReadSaleSummaryDateCmd* cmd)

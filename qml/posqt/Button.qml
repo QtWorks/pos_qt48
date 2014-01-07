@@ -99,7 +99,7 @@ Item {
         onClicked: buttonClick();
         onDoubleClicked : doubleClick();
         onPressAndHold : longClick();
-
+        //hoverEnabled: true;
         property bool cancel : false;
 
         onEntered: if(sensitive) buttonClick();/*{

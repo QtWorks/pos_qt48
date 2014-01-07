@@ -5,6 +5,7 @@
 #include "command.h"
 
 class ReadSaleCmd :             public Command { using Command::Command; };
+class ReadSalePaymentCmd :      public Command { using Command::Command; };
 class ReadOpenSalesAllCmd :     public Command { using Command::Command; };
 class DeleteOrderCmd :          public Command { using Command::Command; };
 class DeleteAllSaleOrdersCmd :  public Command { using Command::Command; };
@@ -101,6 +102,7 @@ public:
     int         menu_id = -1;
     int         order_id = -1;
     int         modifies = -1;
+    int         quantity = 1;
     std::string start_t;
     std::string name;
 
@@ -110,6 +112,7 @@ public:
             menu_id(def->property<int>("menu_id")),
             order_id(def->property<int>("order_id")),
             modifies(def->property<int>("modifies")),
+            quantity(def->property<int>("quantity")),
             start_t(_start_t),
             name(def->property<std::string>("name"))
     {
@@ -129,7 +132,17 @@ public:
     int     menu_id = -1;
     int     order_id = -1;
     int     modifies = -1;
-    //InsertOrderCmd() {}
+    double  multiply = 0.0f;
+};
+
+class AddPaymentCmd
+{
+public:
+    int         sale_id;
+    double      amount;
+    std::string type;
+    AddPaymentCmd(int sid, double amt, const std::string& t)
+    :  sale_id(sid), amount(amt), type(t) {}
 };
 
 #endif // SALE_CMD_H

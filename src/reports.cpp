@@ -10,6 +10,7 @@ Reports::Reports(QObject* parent) : QObject(parent),
     employee_sales = new ListModel(new EmpSaleReportItem(nullptr, nullptr));
     item_details = new ListModel(new ItemSaleReportItem(nullptr, nullptr));
     hour_details = new ListModel(new HourSaleReportItem(nullptr));
+    employee_timecards = new ListModel(new ETimeCardItem(nullptr));
     dummySale = Factory::EmptySale();
 }
 
@@ -172,4 +173,18 @@ void Reports::report_date_stats(int y = -1, int m = -1, int d = -1)
 void Reports::print_sale()
 {
     Printer::Instance().print( dummySale.get() );
+}
+
+void Reports::get_emp_hours(const int& userid)
+{
+    auto user = data.find_user(userid);
+    if( user ) {
+        employee_timecards->clear();
+        auto tm = user->get_timecards();
+        for( const auto& ptr : tm ) {
+            employee_timecards->appendRow(new ETimeCardItem(ptr) );
+        }
+
+        emit empTimecardModelChanged();
+    }
 }

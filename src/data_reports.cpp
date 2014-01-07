@@ -1,4 +1,6 @@
 #include "data.h"
+#include "server/server.h"
+#include "connect.h"
 
 std::unique_ptr<Result> DataHandler::get_sale_report()
 {

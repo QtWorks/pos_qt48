@@ -50,6 +50,7 @@ class MenuListItem : public ListItem
             SelectedRole,
             ParentIdRole,
             CategoryRole,
+            SubCountRole,
             RoleCount
         };
 
@@ -63,6 +64,7 @@ class MenuListItem : public ListItem
                 case PriceRole:
                 case ParentIdRole:
                 case CategoryRole:
+                case SubCountRole:
                     return QVariant::fromValue(0.0f);
                 case NameRole:
                     return QVariant::fromValue( QString(tag.c_str()) );
@@ -93,7 +95,8 @@ class MenuListItem : public ListItem
                     }
                     return QVariant::fromValue( parent->id );
                 }
-
+                case SubCountRole:
+                    return QVariant::fromValue( item->sub_count );
             };
             return QVariant::fromValue(QString("Undefined"));
         }
@@ -108,6 +111,7 @@ class MenuListItem : public ListItem
             mRoles[SelectedRole] = "item_selected";
             mRoles[ParentIdRole] = "item_parentid";
             mRoles[CategoryRole] = "item_catid";
+            mRoles[SubCountRole] = "item_subcount";
         }
 
     private:

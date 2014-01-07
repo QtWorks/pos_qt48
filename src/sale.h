@@ -38,6 +38,7 @@ class Sale {
         double&     change;
         double&     tax;
         double&     cc_paid;
+        int&     tip_percent;
         double      tax_percent = 0.06f;
         double      sub_total   = 0.0f;
         double      owed = 0.0f;
@@ -46,6 +47,7 @@ class Sale {
         int&        table_number;
         int&        user_id;
         int&        session;
+        int&        guests;
 
         std::string start_t; //!<   moment the sale is created. Returned by the DB
 
@@ -67,10 +69,13 @@ class Sale {
 
         //! Setting iscounted = true will add OrderedItem price information to the sale
         //! Add a previously constructed item
-        OrderedItem* addItem(std::unique_ptr<OrderedItem>&& item, bool iscounted = false);
+        OrderedItem* addItem(std::unique_ptr<OrderedItem>&& item, bool iscounted = false, int qty = 1);
 
         //! Add from a menu definition. Creates a new OrderItem
-        OrderedItem* addItem(const MenuItem*, bool iscounted = false);
+        OrderedItem* addItem(const MenuItem*, bool iscounted = false, int qty = 1);
+
+        //! Add item with quantity
+        OrderedItem* add_item_qty(const MenuItem*, const int& qty, bool iscounted = false );
 
         //! Add a comment to the active item
         void add_comment(const std::string& comment, const std::unique_ptr<MenuItem>& blank);

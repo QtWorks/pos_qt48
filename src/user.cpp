@@ -74,15 +74,27 @@ std::unique_ptr<Item> User::get_data(void)
     return std::unique_ptr<Item>(data);
 }
 
-void User::add_timecard(std::unique_ptr<Item>&& timecard)
+void User::add_timecard(std::unique_ptr<Item>&& tm)
 {
-    Time clockin ( static_cast<time_t>( timecard->property<int>("start_epoch") ) );
+    //NOTE: add a check for duplicate entries
+    //Time clockin ( static_cast<time_t>( tm->property<int>("start_epoch") ) );
+    int seconds = tm->property<int>("seconds");
 
-    if( clockin.yd == today.yd ) {
-        clocked_seconds_today += timecard->property<int>("seconds");
+    Time now;
+    if( now.yd != today.yd ) {
+        clocked_seconds_today = 0;
+        timecard.tdsec = 0;
     }
 
-    hv.push_back( std::move(timecard) );
+    today = now;
+
+    clocked_seconds_today += seconds;
+    clocked_seconds_total += seconds;
+
+    timecard.tdsec += seconds;
+    timecard.tlsec += seconds;
+
+    hv.push_back( std::move(tm) );
 }
 
 int User::seconds_timed_total()
@@ -94,4 +106,14 @@ int User::seconds_timed_total()
     }
 
     return seconds;
+}
+
+std::vector<Item*> User::get_timecards()
+{
+    std::vector<Item*>  tm;
+    for( const auto& timecard : hv ) {
+        tm.push_back( timecard.get() );
+    }
+
+    return tm;
 }

@@ -171,3 +171,41 @@ QVariant SaleReportItem::data(int roleName) const
 
     return QVariant::fromValue(QString("Undefined"));
 }
+
+ETimeCardItem::ETimeCardItem(Item* tc_ptr) :
+    ListItem(nullptr)
+{
+    if( tc_ptr ) {
+        start_epoch = tc_ptr->property<int>("start_epoch");
+        end_epoch = tc_ptr->property<int>("end_epoch");
+        start_time = tc_ptr->property<std::string>("start_time");
+        end_time = tc_ptr->property<std::string>("end_time");
+        seconds = tc_ptr->property<int>("seconds");
+    }
+    setRoles();
+}
+
+void ETimeCardItem::setRoles() {
+    mRoles[StartEpochRole] = "start_epoch";
+    mRoles[EndEpochRole] = "end_epoch";
+    mRoles[StartTimeRole] = "start_time";
+    mRoles[EndTimeRole] = "end_time";
+    mRoles[SecondsRole] = "total_seconds";
+}
+
+QVariant ETimeCardItem::data(int role) const {
+    switch(role) {
+    case StartEpochRole:
+    return QVariant::fromValue(start_epoch);
+    case EndEpochRole:
+    return QVariant::fromValue(end_epoch);
+    case StartTimeRole:
+    return QVariant::fromValue( QString(start_time.c_str()) );
+    case EndTimeRole:
+    return QVariant::fromValue( QString(end_time.c_str()) );
+    case SecondsRole:
+    return QVariant::fromValue( seconds );
+    };
+
+    return QVariant::fromValue(QString("undefined"));
+}

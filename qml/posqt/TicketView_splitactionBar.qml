@@ -11,7 +11,7 @@ Slide {
         spacing: 10;
 
         Button {
-            width: root.height * 0.9;
+            width: root.height * 0.98;
             height: width;
             icon: "even_ico.svg";
             font: "Chunkfive";
@@ -23,7 +23,7 @@ Slide {
             }
         }
         Button {
-            width: root.height * 0.9;
+            width: root.height * 0.98;
             height: width;
             icon: "barcode_ico.svg";
             font: "Chunkfive";
@@ -36,7 +36,7 @@ Slide {
             }
         }
         Button {
-            width: root.height * 0.9;
+            width: root.height * 0.98;
             height: width;
             icon: "plus_ico.svg";
             font: "Chunkfive";
@@ -45,6 +45,7 @@ Slide {
             radius: 10;
             color: Colors.green2;
             onButtonClick : {
+                //App.load_subview("CombineView.qml", combine_unload_check);
             }
         }
     }

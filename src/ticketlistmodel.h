@@ -48,7 +48,7 @@ class TicketListItem : public ListItem
             DisplayIdRole,
             FinalRole,
             RefillRole,
-            MultiplierRole,
+            QuantityRole,
             VoidRole,
             RoleCount
         };

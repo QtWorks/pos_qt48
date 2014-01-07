@@ -2,6 +2,7 @@
 #include "sale.h"
 #include "user.h"
 #include "defs.h"
+#include "table.h"
 #include "ordereditem.h"
 #include <sstream>
 #include <iomanip>
@@ -24,21 +25,22 @@ PrinterHandler::PrinterHandler()
 
     std::ostringstream oss;
 
-    oss << "/textbox {/lm 12 def /bm 0 def /rm 10 def /tm 640 def lm tm tm } def\n";
+    oss << "/textbox {/lm 16 def /bm 0 def /rm 10 def /tm 640 def lm tm tm } def\n";
     oss << "/newline { tm 12 sub /tm exch def lm tm moveto } def\n";
     oss << "/pagewidth { initclip clippath flattenpath pathbbox pop exch pop exch pop } def\n";
     oss << "/center { dup stringwidth pop 2 div pagewidth 2 div sub neg tm moveto } def\n";
     oss << "/right { dup stringwidth pop pagewidth exch sub rm sub tm moveto } def\n";
     oss << "/left { lm tm moveto } def\n";
-    oss << "/halfleft { lm 2 div tm moveto } def\n";
+    oss << "/halfleft { 0 tm moveto } def\n";
     oss << "/item { left } def\n/subitem { lm 2 mul tm moveto } def\n";
     oss << "/header_font { /Helvetica-Bold findfont 12 scalefont setfont } def\n";
     oss << "/info_font {/Helvetica findfont 7 scalefont setfont } def\n";
     oss << "/item_font {/Helvetica findfont 10 scalefont setfont } def\n";
-    oss << "/order_font {/Helvetica findfont 13 scalefont setfont } def\n";
+    oss << "/order_font {/Helvetica findfont 11 scalefont setfont } def\n";
+    oss << "/time_font {/Courier findfont 6 scalefont setfont } def\n";
     oss << "/total_font {/Helvetica-Bold findfont 10 scalefont setfont } def\n";
     oss << "/subitem_font {/Helvetica findfont 8 scalefont setfont } def\n";
-    oss << "/totalr { dup stringwidth pop pagewidth exch sub rm 4 mul sub tm moveto } def\n";
+    oss << "/totalr { dup stringwidth pop pagewidth exch sub rm 5 mul sub tm moveto } def\n";
 
     ps_functions = oss.str();
 
@@ -54,7 +56,7 @@ PrinterHandler::PrinterHandler()
     ps_header = oss.str();
     oss.str("");
 
-    set_label_image("/home/art/rok.png");
+    set_label_image("/home/rok/rok.png");
     print_image = true;
 }
 
@@ -69,6 +71,13 @@ void PrinterHandler::generate_postscript()
     if( print_header )      postscript << ps_header;
 
     postscript << ps_items;
+    postscript << "newline\n";
+    postscript << "newline\n";
+    postscript << "time_font\n";
+    char time_buffer[80];
+    time_t now = time(nullptr);
+    strftime(time_buffer, 80, "%Y-%m-%d %H:%M:%S", localtime(&now));
+    postscript << "newline (" << time_buffer << ") center show\n";
     postscript << "showpage\n";
     postscript << "%%EOF";
 }
@@ -159,45 +168,59 @@ template<> int PrinterHandler::print(Sale* sale)
 {
     std::ostringstream oss;
     oss << "info_font\n";
-    oss << "newline (ORDER #: " << sale->id << ") left show (Server: " <<  sale->user->first_name << ") right show\n";
-    oss << "item_font\n";
+    oss << "newline (ORDER #: " << sale->id << ") halfleft show\n";
+    oss << "(SID#:" << sale->session << ") center show (Server: " <<  sale->user->first_name << ") right show\n";
     oss << "newline\n";
+    oss << "newline (QTY) halfleft show (ITEM) center show (AMT) right show\n";
+    oss << "item_font\n";
     oss << std::setprecision(2) << std::fixed;
 
     for( const auto &item : sale->get_items() ) {
-        if( item->subitem ) {
-            oss << "subitem_font\n";
-            oss << "newline (" << item->name << ") subitem show (" << item->total << ") right show\n";
+        if( item->subitem && item->total > 0.0f ) {
+            //oss << "subitem_font\n";
+            oss << "newline info_font (" << item->quantity << ") halfleft show\n";
+            oss << "subitem_font (" << item->name << ") subitem show (" << item->total << ") right show\n";
             oss << "item_font\n";
         }
-        else {
-            oss << "newline (" << item->name << ") left show (" << item->total << ") right show\n";
+        else if( item->total > 0.0f ) {
+            oss << "newline info_font (" << item->quantity << ") halfleft show item_font(" << item->name << ") left show (" << item->total << ") right show\n";
         }
     }
 
     oss << "newline\n";
+    oss << "subitem_font\n";
     oss << "newline (SUBTOTAL) totalr show (" << sale->sub_total << ") right show\n";
     oss << "newline (TAX) totalr show (" << sale->tax << ") right show\n";
-    oss << "total_font newline (TOTAL) totalr show (" << sale->total << ") right show\n";
+    oss << "newline (CREDIT/DEBIT) totalr show (" << sale->cc_paid << ") right show\n";
+    oss << "newline (TENDERED) totalr show (" << sale->tendered << ") right show\n";
+    oss << "newline (CHANGE) totalr show (" << sale->change << ") right show\n";
+    if( sale->tip_percent > 0 ) {
+        oss << "newline (" << sale->tip_percent << "% TIP) totalr show (" << (sale->total * sale->tip_percent / 100) << ") right show\n";
+        oss << "total_font newline (TOTAL) totalr show (" << sale->total + (sale->total * sale->tip_percent / 100) << ") right show\n";
+    } else {
+        oss << "total_font newline (TOTAL) totalr show (" << sale->total << ") right show\n";
+    }
     oss << "newline\n";
     oss << "newline (Thank You!) center show\n";
     ps_items = oss.str();
 
+    print_header = true;
+    print_image = true;
     generate_postscript();
 
     cups_option_t *options = nullptr;
     int num_options = 0;
     int job_id = cupsCreateJob(CUPS_HTTP_DEFAULT, receipt->name, "receipt", num_options, options);
     if( !job_id ) {
+        std::cout << "Error" << std::endl;
         std::cout << cupsLastErrorString() << std::endl;
         return -1;
     }
-/*
-    QFile file("/home/art/save.ps");
+    /*QFile file("/home/rok/save.ps");
     file.open(QFile::WriteOnly | QFile::Text );
     file.write(postscript.str().c_str(), postscript.str().size() );
-    file.close();
-*/
+    file.close();*/
+
     cupsStartDocument( CUPS_HTTP_DEFAULT, receipt->name, job_id, "SaleReceipt", CUPS_FORMAT_POSTSCRIPT, 1);
     cupsWriteRequestData( CUPS_HTTP_DEFAULT, postscript.str().c_str(), postscript.str().size() );
     cupsFinishDocument( CUPS_HTTP_DEFAULT, receipt->name );
@@ -219,21 +242,33 @@ int PrinterHandler::print_order(Sale* sale)
     oss << "newline\n";
     oss << "newline\n";
     oss << "newline\n";
-    oss << "newline (SERVER #: " << sale->user->first_name << ") left show (TABLE#: " << (sale->table_number + 1) << ") right show\n";
+    oss << "newline (SERVER #:) left show (" << sale->user->first_name << ") right show\n";
+    oss << "newline (TABLE#:) left show (" << (sale->table->name) << ") right show\n";
+    oss << "newline (GUESTS:) left show (" << (sale->guests) << ") right show\n";
     oss << "newline\n";
-
+    oss << "newline (ITEM) left show (QTY) right show\n";
     int item_count = 0;
     for( const auto item : sale->get_unsaved_items() ) {
         if( item->subitem ) {
             oss << "item_font\n";
-            oss << "newline (" << item->name << ") subitem show\n";
+            oss << "newline (" << item->name << ") subitem show (" << item->quantity << ") right show\n";
+            oss << "order_font\n";
+        }
+        else if( item->comment ) {
+            oss << "item_font\n";
+            oss << "newline (NOTE: " << item->name << ") subitem show\n";
             oss << "order_font\n";
         }
         else {
             oss << "newline\n";
-            oss << "newline (" << item->name << ") left show\n";
-            item_count++;
+            oss << "newline (" << item->name << ") left show (" << item->quantity << ") right show\n";
+            item_count+= item->quantity;
         }
+    }
+
+    for( const auto item : sale->get_voids() ) {
+        oss << "newline (**************** VOID ****************) center show \n";
+        oss << "newline (" << item->name << ") left show (" << item->quantity << ") right show\n";
     }
 
     oss << "newline\n";
@@ -246,12 +281,79 @@ int PrinterHandler::print_order(Sale* sale)
 
     generate_postscript();
 
-    QFile file("/home/art/save.ps");
+    /*QFile file("/home/art/save.ps");
     file.open(QFile::WriteOnly | QFile::Text );
     file.write(postscript.str().c_str(), postscript.str().size() );
-    file.close();
+    file.close();*/
 
-    return 0;//print_postscript();
+    print_postscript();
+
+    return 0;
+}
+
+template<> int PrinterHandler::print(Session* session)
+{
+    std::ostringstream oss;
+    print_image = false;
+    print_header = false;
+
+    oss << "textbox\n";
+    oss << "header_font\n";
+    oss << "newline\n";
+    oss << "newline (CASHOUT INFO) center show\n";
+    oss << "newline (Mode: " << session->type << ") center show\n";
+    oss << "newline\nnewline\nnewline\n";
+    oss << "newline\n";
+    oss << "newline\n";
+    oss << "info_font\n";
+    oss << "newline (USER: " << session->name << ") left show (SID#: " << session->id  << ") right show\n";
+    oss << "newline\n";
+    oss << "newline\n";
+    oss << std::setprecision(2) << std::fixed;
+    oss << "item_font\n";
+    oss << "newline (Start amount) left show (" << session->start_amount << ") right show\n";
+    oss << "newline (Total Sales) left show(" << session->total_sales << ") right show\n";
+    oss << "newline (Cash tendered) left show (" << session->tendered_cash << ") right show\n";
+    oss << "newline (Credit received) left show (" << session->credit_total << ") right show\n";
+    oss << "newline (Expected cash) left show (" << (session->total_sales - session->credit_total) + session->start_amount << ") right show\n";
+    oss << "newline (Cash counted) left show (" << session->cash_count << ") right show\n";
+    oss << "newline (Cash short) left show (" << session->short_total << ") right show\n";
+    oss << "newline\n";
+    oss << "newline\n";
+    oss << "newline\n";
+    oss << "newline\n";
+    oss << "newline\n";
+    oss << "newline (----------) center show\n";
+
+    ps_items = oss.str();
+    generate_postscript();
+    print_postscript();
+
+    return 0;
+}
+
+template<> int PrinterHandler::print(User::Timecard* timecard)
+{
+    std::ostringstream oss;
+    print_image = false;
+    print_header = false;
+
+    oss << "textbox\n";
+    oss << "newline\n";
+    oss << "newline (TIMECARD) center show\n";
+    oss << "newline (" << timecard->label << ") center show\n";
+    oss << "newline newline newline\n";
+    oss << "item_font\n";
+    oss << "newline (Clock-in time:) left show (" << timecard->start << ") right show\n";
+    oss << "newline (Clock-out time:) left show (" << timecard->end << ") right show\n";
+    oss << "newline (Seconds:) left show (" << timecard->tdsec << ") right show\n";
+    oss << "newline newline newline\n";
+
+    ps_items = oss.str();
+    generate_postscript();
+    print_postscript();
+
+    return 0;
 }
 
 void PrinterHandler::set_header_text(const std::string& header)

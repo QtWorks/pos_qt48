@@ -23,13 +23,14 @@ Button {
 
     Text {
         //anchors.horizontalCenter: parent.horizontalCenter;
-        anchors.verticalCenter: icon.verticalCenter;
-        anchors.right: icon.left; anchors.leftMargin: parent.width * 0.01;
+        //anchors.verticalCenter: icon.verticalCenter;
+        anchors.bottom: icon.top;
+        anchors.right: parent.right; anchors.rightMargin: parent.width * 0.01;
         //anchors.right: icon.right; anchors.rightMargin: parent.width * 0.01;
         color: "white";
         font.family: "Molot";
-        font.pixelSize: parent.height * 0.2;
-        text: table_id + 1;
+        font.pixelSize: parent.height * 0.12;
+        text: table_name;
     }
     Text {
         id: pricetext;

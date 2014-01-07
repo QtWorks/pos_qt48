@@ -18,7 +18,6 @@ Item {
     signal payClicked(variant _total);
     signal cancelClick();
 
-    //antialiasing: true;
     anchors.fill: parent;
 
     function hide() {
@@ -32,7 +31,8 @@ Item {
     function show( amt ) {
         if( amt ){
             _raw = String(amt.toFixed(2))
-            total = amt.toFixed(2);
+            total = Number(_raw);//amt.toFixed(2);
+            total = total.toFixed(2);
             amountInput.text = String(amt.toFixed(2))
         }
         digit_slide0.show(200);
@@ -64,7 +64,6 @@ Item {
         anchors.top: parent.top; anchors.topMargin: height * 0.4;
 
         Rectangle {
-            //color: "white";
             color: "black";
             width: parent.width * 0.28;
             height: parent.height * 0.7;
@@ -77,7 +76,6 @@ Item {
                 text: "";
                 font.pixelSize: parent.height * 0.85;
                 font.family: "Molot";
-                //fontSizeMode: Text.VerticalFit;
                 color: "white";
                 maximumLineCount: 1;
                 horizontalAlignment: Text.AlignHCenter;
@@ -251,7 +249,13 @@ Item {
                 _raw += _key;
             }
         } else {
-            _raw += _key;
+            //Adding a decimal to empty amount prepend a '0'
+            if( _key === '.' && !_raw.length ) {
+                _raw = "0.";
+            }
+            else {
+                _raw += _key;
+            }
         }
 
         if( !_raw ) {

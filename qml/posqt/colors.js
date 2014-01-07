@@ -89,12 +89,13 @@ function index_color() {
 
 function pc() { var i = color_pc; color_pc = (color_pc + 1 > (colorList.length - 1)) ? 0 : color_pc + 1; return i; }
 function index( index ) {
-    if( index && index > -1 && index < colorList.length )
-        return colorList[index];
+    /*if( index && index > -1 && index < colorList.length )
+        return colorList[index]; */
+    return colorList[ index % 14 ];
 }
 function indexMenu( index ) {
     //if( index && index > -1 && index < menuColors.length )
-        return menuColors[index];
+        return menuColors[index % 7];
 }
 
 function make( definition, opacity ){

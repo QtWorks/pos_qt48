@@ -43,7 +43,7 @@ Slide {
             height: root.height * 0.8;
             width: root.height * 0.8;
             radius: 10;
-            color: Colors.violet3;
+            color: Colors.green4;
             icon: "settings_ico2.svg";
             label: "Split";
             font: root.font;
@@ -51,6 +51,7 @@ Slide {
             visible: ticket_editable;
             onButtonClick : {
                 pay_actions.hide();
+                extra_actions.hide();
                 split_actions.toggle();
             }
         }
@@ -60,7 +61,7 @@ Slide {
             height: root.height * 0.8;
             width: root.height * 0.8;
             radius: 10;
-            color: Colors.green4;
+            color: Colors.green2;
             icon: "tag_ico.svg";
             label: "Pay";
             font: root.font;
@@ -85,12 +86,16 @@ Slide {
             height: root.height * 0.8;
             width: root.height * 0.8;
             radius: 10;
-            color: Colors.orange3;
-            icon: "x_ico.svg";
-            label: "Done";
+            color: Colors.blue2;
+            icon: "reports_ico3.svg";
+            label: "Extra";
             pixelSize: root.pixelSize;
             font: root.font;
-            onButtonClick : doneClick();
+            onButtonClick : {
+                pay_actions.hide();
+                split_actions.hide();
+                extra_actions.toggle();
+            }
         }
     }
 

@@ -40,9 +40,8 @@ Item {
                     anchors.left: parent.left;
                     anchors.leftMargin: width * 0.5;
                     font.family: "Chunkfive";
-                    font.pixelSize: parent.height * 0.4;
-                    text: item_displayid;
-                    visible: (!item_is_sub);
+                    font.pixelSize: parent.height * 0.2;
+                    text: "QTY. " + item_quantity;
                 }
 
 
@@ -104,12 +103,8 @@ Item {
                 }
 
                 onButtonClick: {
-                    if( selected_id == item_id ) {
-                        orderroot.itemLongClick( item_menuid, item_parentid );
-                        return;
-                    }
-
-                    ticketView.positionViewAtIndex( item_id - 1, ListView.Beginning );
+                    if( ticketBox.snap_to_item )
+                        ticketView.positionViewAtIndex( item_id - 1, ListView.Beginning );
                     selected_id = item_id;
                     item = orderListModel.get( item_id );
                     TicketLib.select( selected_id );
@@ -133,7 +128,8 @@ Item {
                 }
 
                 onLongClick : {
-                    ticketView.positionViewAtIndex( item_id - 1, ListView.Beginning );
+                    if( ticketBox.snap_to_item )
+                        ticketView.positionViewAtIndex( item_id - 1, ListView.Beginning );
                     selected_id = item_id;
                     item = orderListModel.get( item_id );
                     TicketLib.select( selected_id );
@@ -145,10 +141,11 @@ Item {
 
                 Component.onCompleted: {
                     if(item_is_sub && !item_comment) {
-                        width = width * 0.65;
-                        order_index.visible = false;//font.pointSize = 9;
-                        order_name.font.pointSize = height * 0.2;
+                        width = width * 0.75;
+                        order_index.font.pixelSize = height * 0.15;
                         //total_text.text = item_subid;
+                        if( item_name.length > 20 )
+                            order_name.font.pixelSize = height * 0.15;
                         if( item_total !== 0 ) {
                             color = "#8bc53f";
                         }

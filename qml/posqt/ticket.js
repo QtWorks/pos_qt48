@@ -42,7 +42,7 @@ function init(ticketAPI) {
     _init = true;
 
     //asign functions
-    refresh     = API.Refresh;
+    refresh     = API.refresh;
     activate    = API.set_sale;
     close       = API.close;
     updateListAdd = API.updateListAdd;

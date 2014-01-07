@@ -30,7 +30,8 @@ class OrderedItem
         int             unique_id   = -1;
         int             sale_id     = -1;
         int             refill      = 0;
-        double          multiply    = 0.0f;
+        int             quantity    = 1;
+        int             hold_flag   = 0;
         OrderedItem* parent = nullptr;
 
         std::vector<OrderedItem*>   subitems;

@@ -1,4 +1,6 @@
 #include "data.h"
+#include "server/server.h"
+#include "connect.h"
 #include <algorithm>
 #include <iterator>
 
@@ -135,6 +137,9 @@ void DataHandler::save_sale(const int& sale_id, bool isnew)
 {
     Sale* sale = find_sale( sale_id );
     if( sale ) {
+        if( sale->items_before_save || sale->void_count )
+            printer.print_order( sale );
+
         if( isnew )
             write_new_sale( sale );
         else
@@ -147,10 +152,13 @@ void DataHandler::save_sale(const int& sale_id, bool isnew)
     }
 }
 
-bool DataHandler::pay_sale(Sale* sale, const double& amount) {
+bool DataHandler::pay_sale(Sale* sale, const double& amount, const bool& print) {
 
     save_user_data( sale->user );
+    dserver->command(new AddPaymentCmd(sale->id, amount, "CASH"));
     sale->pay_cash( amount );
+
+    if ( print ) printer.print( sale );
 
     if( !sale->owed ) {
         sale->open = false;
@@ -170,21 +178,25 @@ bool DataHandler::pay_sale(Sale* sale, const double& amount) {
     return false;
 }
 
-bool DataHandler::pay_sale(const int& sale_id, const double& amount)
+bool DataHandler::pay_sale(const int& sale_id, const double& amount, const bool& print)
 {
    Sale* sale = find_sale( sale_id );
    if( sale ) {
-       return pay_sale( sale, amount);
+       return pay_sale( sale, amount, print);
    }
 
    return false;
 }
 
-bool DataHandler::pay_sale_credit(Sale* sale, const double& amount)
+bool DataHandler::pay_sale_credit(Sale* sale, const double& amount, const bool& print)
 {
     save_user_data( sale->user );
 
+    dserver->command(new AddPaymentCmd(sale->id, amount, "CREDIT"));
     sale->pay_credit( amount );
+
+    if( print ) printer.print( sale );
+
     if( !sale->owed ) {
         sale->open = false;
         save_sale( sale->id );
@@ -255,8 +267,12 @@ void DataHandler::sale_transfer_item(Sale* to, Sale* from, OrderedItem* order)
     dserver->command( new WriteSaleCmd( to->flatten(), false ) );
     dserver->command( new WriteSaleCmd( from->flatten(), false) );
 
-    //Totals should not change...
+    //Totals should not change... unless the user changed!
     //update_user_sale_totals(from->user);
+    if( to->user_id != from->user_id ) {
+        update_user_sale_totals( from->user );
+        update_user_sale_totals( to->user );
+    }
 }
 
 void DataHandler::save_ordereditem(OrderedItem* order)
@@ -268,5 +284,17 @@ void DataHandler::void_ordereditem(Sale* sale, const int& orderid)
     auto order = sale->get_order_ptr( orderid );
     if( order ) { //Check it exists
         dserver->command( new DeleteOrderCmd( order->unique_id ) );
+    }
+}
+
+void DataHandler::transfer_sale_ownership(const int& tf_sale_id, const int& tf_user_id)
+{
+    auto tf_user = find_user(tf_user_id);
+    auto tf_sale = find_sale(tf_sale_id);
+    if( tf_user->session > 0 ) {
+        if( tf_sale->user ) {
+            tf_sale->user->detach_sale( tf_sale );
+        }
+        tf_user->attach_sale( tf_sale );
     }
 }

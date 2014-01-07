@@ -92,11 +92,11 @@ Rectangle {
         }
 
         if( fade ) { fadeani.to = 1.0; fadeani.from = 0.0; fadeani.start() }
+        showing = true;
         animation.to = to;
         animation.callback = root.shown;
         animation.start();
 
-        showing = true;
     }
 
     /// Hide the slide.
@@ -111,10 +111,10 @@ Rectangle {
         }
 
         if( fade ) { fadeani.to = 0.0; fadeani.from = 1.0; fadeani.start() }
+        showing = false;
         animation.callback = root.hid;
         animation.to = from;
         animation.start();
 
-        showing = false;
     }
 }

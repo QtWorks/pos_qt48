@@ -1,6 +1,6 @@
 #include "server.h"
 #include "../sale.h"
-
+#include "../connect.h"
 
 //Read aggregate command for fetching sale summary
 template<> RES_UPTR
@@ -64,6 +64,9 @@ template<> RES_UPTR DataServer::command(ReadSaleCmd* cmd)
         sale->push_property("cc_paid", read_double( 0,  "cc_paid"));
         sale->push_property("change", read_double(  0,  "change"));
         sale->push_property("start_t", read_cstring( 0, "start_t"));
+        sale->push_property("guests",   read_int(   0,  "guests"));
+        sale->push_property("tip",      read_int(0,  "tip"));
+
         result->items.push_back(std::move(sale));
     }
 
@@ -92,6 +95,8 @@ template<> RES_UPTR DataServer::command(ReadOpenSalesAllCmd* UNUSED(cmd))
         sale->push_property("cc_paid", read_double(i, "cc_paid"));
         sale->push_property("change", read_double(i, "change"));
         sale->push_property("start_t", read_cstring(i, "start_t"));
+        sale->push_property("guests",   read_int    (i, "guests"));
+        sale->push_property("tip",      read_int(i,  "tip"));
 
         result->items.push_back(std::move(sale));
     }
@@ -122,7 +127,7 @@ template<> RES_UPTR DataServer::command(WriteSaleCmd* cmd)
     else {
         sql  << "UPDATE sales SET(";
     }
-    sql  << "end_t,emp,amt,tax,tender,open,table_num,item_count,session,cc_paid,change)";
+    sql  << "end_t,emp,amt,tax,tender,open,table_num,item_count,session,cc_paid,change,guests,tip)";
     if( cmd->isnew ) {
         sql << " VALUES(DEFAULT, now(), ";
     }
@@ -139,7 +144,9 @@ template<> RES_UPTR DataServer::command(WriteSaleCmd* cmd)
             << cmd->info->property<int>("item_count") << ","
             << cmd->info->property<int>("session") << ","
             << cmd->info->property<double>("cc_paid") << ","
-            << cmd->info->property<double>("change") << " )";
+            << cmd->info->property<double>("change") << ","
+            << cmd->info->property<int>("guests") << ","
+            << cmd->info->property<int>("tip") << ")";
     if( !cmd->isnew ) {
         sql << " WHERE id = " << cmd->info->property<int>("id") << " AND emp = " << cmd->info->property<int>("emp");
     }
@@ -184,7 +191,7 @@ template<> RES_UPTR DataServer::command(ReadOpenSalesEmpCmd* pCmd)
 
 template<> RES_UPTR DataServer::command(ReadSaleDataCmd* pCmd)
 {
-    sql << "SELECT id,menu_id,name,modifies,amount FROM sold_items WHERE sale_id = " << pCmd->mSaleId;
+    sql << "SELECT id,menu_id,name,modifies,amount,quantity FROM sold_items WHERE sale_id = " << pCmd->mSaleId;
     sql << " ORDER BY id ASC;";
     run_sql();
 
@@ -198,6 +205,7 @@ template<> RES_UPTR DataServer::command(ReadSaleDataCmd* pCmd)
         order->push_property("name",        read_cstring(i, "name") );
         order->push_property("modifies",    read_int(i, "modifies") );
         order->push_property("amount",      read_double(i, "amount") );
+        order->push_property("quantity",    read_int(i, "quantity") );
 
         result->items.push_back(std::unique_ptr<Item>(order));
     }
@@ -215,4 +223,34 @@ template<> RES_UPTR DataServer::command( DeleteSaleCmd* cmd )
     run_sql(); clr_sql();
 
     return nullptr;
+}
+
+template<> RES_UPTR DataServer::command( AddPaymentCmd* cmd)
+{
+    sql << "insert into payments(sale_id, amount,type, stamp)  values(";
+    sql << cmd->sale_id << ", " << cmd->amount << ",'" << cmd->type << "', now() )";
+    run_sql();
+    clr_sql();
+
+    return nullptr;
+}
+
+template<> RES_UPTR DataServer::command( ReadSalePaymentCmd* cmd )
+{
+    sql << "select * from payments where sale_id = " << cmd->id;
+    run_sql();
+
+    RES_UPTR result(new Result);
+    for( int i = 0; i < tuple_count(); i++ ) {
+        Item* payment = new Item;
+        payment->push_property("sale_id",   read_int(i, "sale_id"));
+        payment->push_property("amount",    read_double(i, "amount"));
+        payment->push_property("type",      read_cstring(i, "type"));
+
+        result->items.push_back(std::unique_ptr<Item>(payment));
+    }
+
+    clr_sql();
+
+    return std::move( result );
 }

@@ -11,7 +11,7 @@ Slide {
 
         Button {
             id: cash;
-            width: root.height * 0.9;
+            width: root.height * 0.98;
             height: width;
             icon: "cash_ico.svg";
             label: "Cash";
@@ -28,7 +28,7 @@ Slide {
 
         Button {
             id: credit;
-            width: root.height * 0.9;
+            width: root.height * 0.98;
             height: width;
             icon: "credit_ico.svg";
             label: "Credit";
@@ -38,7 +38,7 @@ Slide {
             onButtonClick : {
                 cashView.color = Colors.make( color, "99" );
                 cashmode = false;
-                cashView.hint = ticket.ticketTotal;
+                cashView.hint = ticket.ticketOwed;
                 cashView.show();
             }
         }

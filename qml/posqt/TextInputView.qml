@@ -48,7 +48,7 @@ FadeView {
         width: root.width;
         height: root.height * 0.3;
         color: "black";
-        to: root.height/2 - height/2;
+        to: root.height/2 - height;
         from: -height;
         y: -height;
 
@@ -108,7 +108,9 @@ FadeView {
             font: "Chunkfive";
             height: parent.height * 0.95;
             width: parent.height * 0.95;
-            onButtonClick: { accept( root.text ); }
+            onButtonClick: {
+                accept( root.text );
+            }
         }
     }
 }

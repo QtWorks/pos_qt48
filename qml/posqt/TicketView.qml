@@ -16,11 +16,13 @@ FadeView {
     property alias ticket_sub_total : ticket.ticketSubTotal;
     property alias ticket_id : ticket.sale_id;
     property alias ticket_user : ticket.userName;
+    property alias snap_to_item : ticket.snap_to_item;
 
     signal doneClick();
     signal payClick();
     signal cashOutClick();
     signal closed();
+    signal transfer();
 
     onHalfShown : {
         cashmode = true;
@@ -36,18 +38,61 @@ FadeView {
         hide_level_two();
     }
 
+    function print_choice( print ) {
+        if( print ) {
+            TicketLib.API.print( ticket.sale_id );
+            App.hide_choice();
+        }
+    }
+
     function hide_level_one() {
         main_actions.hide();
     }
 
     function hide_level_two() {
+        extra_actions.hide();
         split_actions.hide();
         pay_actions.hide();
     }
 
+    function combine_unload_check() {
+        if( TicketLib.API.saleId === -1 ) {
+            root.hide();
+        }
+        else {
+            root.color =  Colors.index( TicketLib.API.tableID + 1 );
+        }
+    }
+
+    function set_tip()
+    {
+        extra_actions.hide();
+        App.show_number_input("Enter tip percent: ", set_tip_callback);
+    }
+
+    function set_tip_callback( tip )
+    {
+        TicketLib.API.set_sale_tip( ticket.sale_id, tip );
+    }
+
+    Button {
+        id: doneb;
+        anchors.bottom: ticket.bottom; anchors.bottomMargin: root.height * -0.05;
+        anchors.right: parent.right; anchors.rightMargin: root.width * 0.01;
+        height: root.height * 0.22;
+        width: height;
+        radius: 5;
+        color: Colors.orange3;
+        icon: "x_ico.svg";
+        label: "Done";
+        pixelSize: height * 0.2;
+        font: "Chunkfive";
+        onButtonClick : root.doneClick();
+    }
+
     TicketView_payactionBar {
         id: pay_actions;
-        anchors.top: parent.top; anchors.topMargin: height * 2;
+        anchors.top: parent.top; anchors.topMargin: height * 1.8;
         x: -width;
         to: 0;
         from: -width;
@@ -59,7 +104,7 @@ FadeView {
 
     TicketView_splitactionBar {
         id: split_actions;
-        anchors.top: parent.top; anchors.topMargin: height * 2;
+        anchors.top: parent.top; anchors.topMargin: height * 1.8;
         color: "black";
         width: parent.width;
         height: parent.height/4;
@@ -67,6 +112,16 @@ FadeView {
         to: 0;
         from: -width;
         property: "x";
+    }
+    TicketView_extraBar {
+        id: extra_actions;
+        anchors.top: parent.top; anchors.topMargin: height * 1.8;
+        color: Colors.make( Colors.blue2, "99" );//"#88ffffff";
+        width: parent.width;
+        height: parent.height/4;
+        x: -width;
+        to: 0;
+        from: -width;
     }
 
     TicketView_actionBar {
@@ -85,14 +140,16 @@ FadeView {
         }
 
         onPayClick : {
+            extra_actions.hide();
             split_actions.hide();
             pay_actions.toggle();
         }
 
         onDoneClick : {
-            root.doneClick();
+            //root.doneClick();
         }
     }
+
 
     Ticket {
         id: ticket;
@@ -101,6 +158,10 @@ FadeView {
         allowOk: true;
         property bool active : false;
         ticketColor: Colors.gray_two;
+
+        onPrintClick : {
+            App.choice( "Print Ticket?", print_choice );
+        }
 
         onYChanged : {
             if( active && y >= (parent.height/2 - height/2)/2 ) {
@@ -135,10 +196,13 @@ FadeView {
             pay_actions.hide();
         }
         onAccept : {
+            App.choice( "Print Receipt?", print_choice );
+        }
+
+        function print_choice( choice ) {
             hide(1000);
             var change  = total - TicketLib.API.owed;
-            var paid = (cashmode) ? TicketLib.pay_cash( total ) : TicketLib.pay_credit( total );
-
+            var paid = (cashmode) ? TicketLib.pay_cash( total, choice ) : TicketLib.pay_credit( total, choice );
             App.refresh();
             User.api.refresh();
             TicketLib.refresh();

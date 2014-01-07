@@ -36,6 +36,8 @@ class Factory
         sale->push_property("item_count", 0);
         sale->push_property("cc_paid", double(0.0f));
         sale->push_property("change", double(0.0f));
+        sale->push_property("guests", 0);
+        sale->push_property("tip", 0);
         sale->push_property("start_t", "now()");
 
         return std::unique_ptr<Sale>(new Sale(std::move(sale)));

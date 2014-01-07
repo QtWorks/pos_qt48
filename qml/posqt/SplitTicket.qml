@@ -21,6 +21,8 @@ Item {
         App.setBackCB( null );
     }
 
+    //This function deletes selected ticket and combines the items back into the
+    //root ticket.
     function removeClick( vt ) {
         var c = vt.count;
         TicketLib.combine( rootTicket.sale_id, vt.sale_id );
@@ -33,30 +35,29 @@ Item {
 
     function view_split_select_item( sticket, sale_id, item_id ) {
         from_t = sticket;
-        dimmer.show();
         removeBtn.visible = false;
     }
 
     function split_ticket_select( sticket ) {
-        removeBtn.visible = !(rootTicket.sale_id == sticket.sale_id);
-        if( sticket.sale_id !== rootTicket.sale_id ) {
-            indicator.x = sticket.x + rootTicket.width;
-        }
-        else {
-            indicator.x = rootTicket.x;
-        }
+        removeBtn.visible = !(rootTicket.sale_id === sticket.sale_id);
 
+        if( selected_ticket )
+            selected_ticket.selected = false;
         selected_ticket = sticket;
+        selected_ticket.selected = true;
     }
 
     function split_select_destination( sticket, sale_id ) {
-        if( from_t == sticket ) {
+        if( from_t === sticket ) {
             from_t.selected_id = -1;
             from_t = null;
-            dimmer.hide();
             return;
         }
         if( from_t && from_t !== sticket && from_t.selected_id > -1) {
+            if( selected_ticket )
+                selected_ticket.selected = false;
+            selected_ticket = sticket;
+            selected_ticket.selected = true;
 
             var item = from_t.orderListModel.get( from_t.selected_id );
             if( item.item_is_sub ) return;
@@ -77,12 +78,19 @@ Item {
             TicketLib.transfer( from_t.selected_id, sale_id, from_t.sale_id );
             TicketLib.refresh();
 
-            if( from_t.virtual )
+            if( sticket.virtual ) {
+                sticket.ticketSubTotal = TicketLib.API.get_sale_subtotal( sticket.sale_id );
+                sticket.ticketOwed = TicketLib.API.get_sale_owed( sticket.sale_id );
+            }
+
+            if( from_t.virtual ) {
                 from_t.remove( item );
+                from_t.ticketSubTotal = TicketLib.API.get_sale_subtotal( from_t.sale_id );
+                from_t.ticketOwed = TicketLib.API.get_sale_owed( from_t.sale_id );
+            }
 
-
-            dimmer.hide();
             removeBtn.visible = false;
+            from_t.selected_id = -1;
             from_t = null;
         }
     }
@@ -157,6 +165,7 @@ Item {
             onButtonClick : {
                 splitCount++;
                 var vt = rootTicket.split( split_area, list_comp.createObject(parent) );
+
                 vt.visible = true;
             }
         }
@@ -177,7 +186,6 @@ Item {
             onButtonClick : {
                 visible = false;
                 removeClick( selected_ticket );
-                indicator.x = -indicator.width;
             }
         }
 
@@ -191,35 +199,12 @@ Item {
         }
     }
 
-    FadeView {
-        id: dimmer;
-        duration: 300;
-        dim: true;
-        dimColor: Colors.make( "#000000", "cc" );
-        color: Colors.make( Colors.blue2, "99" );
-        onClicked :  {
-            hide();
-        }
-    }
-
     Ticket {
         id: rootTicket;
         anchors.left: parent.left; anchors.leftMargin: parent.width * 0.001;
         anchors.top: parent.top; anchors.topMargin: 10;
         width: (parent.width - (parent.width * 0.003)) / 3;
         ticketSubTotal: TicketLib.SubTotal;
-    }
-
-
-    Rectangle {
-        id: indicator;
-        color: Colors.make( Colors.blue4, "99" );
-        width: rootTicket.width;
-        height: rootTicket.height;
-        x: -width;
-        y: rootTicket.y;
-
-        Behavior on x { PropertyAnimation { duration: 300; easing.type: Easing.InOutCirc; } }
     }
 
     Component.onCompleted : {

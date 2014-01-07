@@ -6,6 +6,7 @@ import "colors.js" as Colors;
 
 Item {
     property variant table_model : App.get_tableModel();
+    property int current_table : 0;
     width: App.screen_w;
     height: App.screen_h;
 
@@ -48,6 +49,13 @@ Item {
         }
     }
 
+    function new_sale_with_guests( guest_num )
+    {
+        var sid = App.addNewSale( current_table );
+        TicketLib.API.set_sale_guests( sid, guest_num );
+        App.refresh();
+    }
+
     Component {
         id: tableDelegate;
         Button{
@@ -56,12 +64,12 @@ Item {
             height: grid.height/3 * 0.99;
             radius: 5;
 
-            color: Colors.index( table_id + 1 );//make( Colors.white, "aa" );//"#8bc53f";
+            color: Colors.index( table_id );
 
-            //icon: "table_no_legs_ico.svg";
-            textColor: "black";
-            pointSize: 35;
-            label: table_id + 1;
+            textColor: "white";
+            font: "Chunkfive";
+            pixelSize: height * 0.1;
+            label: table_name;
             Image {
                 id: table_state_ico;
                 anchors.left: parent.right;
@@ -72,12 +80,6 @@ Item {
                 sourceSize.height: 44;
             }
             onButtonClick : {
-                //parent.visible = false;
-                //table_component = table;
-                /*variant saleid = table_sale;
-                if( saleid < 0 && !table_salecount) {
-                    saleid = App.addNewSale(table_id);
-                }*/
                 if( !table_salecount || table_user == User.id ) {
                     ticket.ticket_editable = true;
                     add_sale_btn.visible = true;
@@ -92,13 +94,12 @@ Item {
                     return;
                 }
 
-                //if( !table_salecount && table_user !== User.id )
-                    //reserve_btn.visible = false;
-
+                current_table = table_id;
                 quickview.color = Colors.make( color, "99" );
                 quickview.show();
                 App.refreshTables();
             }
+
             Component.onCompleted : {
                 if( table_reserved ) {
                     icon = "banner_ico.svg";
@@ -173,7 +174,7 @@ Item {
 
             Item { //Sales present at table(containter)
                 anchors.verticalCenter: parent.verticalCenter;
-                height: App.screen_h * 0.37;
+                height: parent.height * 0.9;//App.screen_h * 0.37;
                 anchors.left: parent.left; anchors.leftMargin: 10;
                 anchors.right: add_sale_btn.left; anchors.rightMargin: parent.width * 0.01;
 
@@ -194,9 +195,9 @@ Item {
                         id: tableSaleDelegate;
                         TableItem {
                             id: saleButton;
-                            color: Colors.index( table_id + 1 );
-                            width: list_slider.height * 0.9;
-                            height: list_slider.height;
+                            color: Colors.index( table_id );
+                            width: tableSalesList.height;
+                            height: width;//list_slider.height;
                             radius: 5;
                             pointSize: 20;
                             onButtonClick: {
@@ -205,6 +206,7 @@ Item {
                                 TicketLib.refresh();
                                 ticket.ticket_sub_total = TicketLib.API.subTotal.toFixed(2);
                                 ticket.color = Colors.make( color, "99" );
+                                current_table = table_id;
                                 ticket.show();
                             }
                             Component.onCompleted : {
@@ -229,7 +231,8 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter;
 
                 onButtonClick : {
-                    App.addNewSale( App.tableid );
+                    //var sid = App.addNewSale( App.tableid );
+                    App.show_number_input("Number of Guests", new_sale_with_guests );
                 }
             }
         }

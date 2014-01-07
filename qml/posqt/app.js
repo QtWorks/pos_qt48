@@ -2,7 +2,7 @@
 Qt.include( "app_nav.js" );
 Qt.include( "app_user.js" );
 
-var _API;
+var _API; var api;
 var _initialized = false;
 var _root;
 var admin_console;
@@ -18,8 +18,13 @@ var table_isreserved;
 var tableid = 0;
 var get_user_id;
 
+//callbacks
 var popupCB = null;
 var backCB = null;
+var subview_unload_callback = null;
+var keypad_ok_callback = null;
+var keypad_cancel_callback = null;
+var number_input_accept = null;
 
 //Globar variables
 var screen_h        = 900;//1080;
@@ -57,9 +62,10 @@ function getUserId() { return userid; }
 //Helpful values
 var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 
-function init( api ) {
+function init( _api_ ) {
     if ( !_initialized ) {
-        _API = api;
+        _API = _api_;
+        api = _api_;
         _initialized = true;
         tableSaleModel  = api.tableSaleModel;
         refresh = api.refresh;
@@ -171,6 +177,25 @@ function admin_console_set_interactive( interactive ) {
     admin_console.set_interactive( interactive );
 }
 
-function load_subview( component ) {
+function load_subview( component, callback ) {
     _root.load_subview( component );
+    if( !component.length && subview_unload_callback) {
+        subview_unload_callback();
+    }
+    else {
+        subview_unload_callback = callback;
+    }
+}
+
+function show_keypad( ok_cb, fail_cb )
+{
+    keypad_ok_callback = ok_cb;
+    keypad_cancel_callback = fail_cb;
+    _root.keypad_show();
+}
+
+function show_number_input( promt, accept_cb )
+{
+    number_input_accept = accept_cb;
+    _root.show_number_input( promt );
 }

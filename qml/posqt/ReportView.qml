@@ -17,17 +17,7 @@ Item {
     property int year : -1;
     property int month : -1;
     property int day : -1;
-    //property variant selectCategory : MenuMethods.selectCategory;
-/*
-    property variant report_all_years   : ReportMethods.report_all_years;
-    property variant report_date        : ReportMethods.report_date;
-    property variant report_today       : ReportMethods.report_today;
-    property variant report_this_year   : ReportMethods.report_this_year;
-    property variant report_this_month  : ReportMethods.report_this_month;
-    property variant report_year        : ReportMethods.report_year;
-    property variant report_month       : ReportMethods.report_month;
-    property variant report_item_click  : ReportMethods.report_item_click;
-*/
+
     function report_item_click(item_id, item_label, item_total,
                                 item_salecount, item_year, item_month, item_day )
     { ReportMethods.report_item_click(item_id, item_label, item_total, item_salecount, item_year, item_month, item_day); }
@@ -61,15 +51,15 @@ Item {
         else {
             reportBox.hide();
             if( selected_btn ) {
-                selected_btn.height = selected_btn.height/2;//200;
-                selected_btn.width = selected_btn.width/2;
+                //selected_btn.height = selected_btn.height/2;//200;
+                //selected_btn.width = selected_btn.width/2;
             }
         }
     }
 
     function select_report( btn ) {
-        btn.height = btn.height * 2;
-        btn.width = btn.width * 2;
+        //btn.height = btn.height * 2;
+        //btn.width = btn.width * 2;
         selected_btn = btn;
         reportBox.color = Colors.make( btn.color, "dd" );
         report_icon.source = btn.icon;
@@ -85,15 +75,14 @@ Item {
     }
 
     Rectangle {
+        id: bbox;
         anchors.right: parent.right;
         anchors.left: parent.left;
-        anchors.top: mainRow.top;//reportButtonRow.top;
-        anchors.bottom: mainRow.bottom;//reportButtonRow.bottom;
-
+        height: parent.height * 0.5;
+        width: parent.height * 0.5;
+        anchors.verticalCenter: parent.verticalCenter;
         anchors.leftMargin: 1;
         anchors.rightMargin: 1;
-        anchors.topMargin: -10;
-        anchors.bottomMargin: -10;
         color: "black";
 
         Image {
@@ -103,54 +92,50 @@ Item {
             sourceSize.width: parent.height * 0.5;
             sourceSize.height: parent.height * 0.5;
         }
-    }
-    Row {
-        id: mainRow;
-        spacing: 10;
-        anchors.centerIn: parent;
-        Button {
-            id: inv_btn;
-            width: 410;
-            height: 410;
-            anchors.top: reportButtonRow.top;
-            anchors.bottom: reportButtonRow.bottom;
-            color: Colors.orange;
-            label: "Inventory";
-            icon: "inventory_ico.svg";
-            pointSize: 25;
-            radius: 10;
-            Behavior on width { PropertyAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-            Behavior on height { PropertyAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-            onHeightChanged : {
-                if( height == 410 ) {
-                    anchors.bottom = reportButtonRow.bottom;
-                }
-            }
-            onButtonClick : {
-                anchors.bottom = undefined;
-                select_report( inv_btn );
-                show_report_list( true );
-            }
-        }
-
         Grid {
             id: reportButtonRow;
+            anchors.centerIn: parent;
             spacing: 10;
-            smooth: false;
-            columns: 2;
+            columns: 4;
             rows: 2;
+            Button {
+                id: timeclock_btn;
+                width: bbox.height * 0.5 - 10;
+                height: bbox.height * 0.5 - 10;
+                color: Colors.blue3;
+                icon: "clock_ico.svg";
+                pixelSize: height * 0.1;
+                label: "Timeclock";
+                font: "Chunkfive";
+                onButtonClick : {
+                    App.load_subview("ReportsTimecardView.qml");
+                }
+            }
+
+            Button {
+                id: inv_btn;
+                width: bbox.height * 0.5 - 10;
+                height: bbox.height * 0.5 - 10;
+                color: Colors.orange;
+                label: "Inventory";
+                icon: "inventory_ico.svg";
+                pixelSize: height * 0.1;
+                font: "Chunkfive";
+                onButtonClick : {
+                    select_report( inv_btn );
+                    show_report_list( true );
+                }
+            }
 
             Button {
                 id: all_btn;
-                radius: 10;
-                width: 200;
-                height: 200;
+                width: bbox.height * 0.5 - 10;
+                height: bbox.height * 0.5 - 10;
                 icon: "infinity_ico.svg";
                 color: Colors.main_blue;
-                pointSize: 15;
+                pixelSize: height * 0.1;
+                font: "Chunkfive";
                 label: "All";
-                Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-                Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
                 onButtonClick : {
                     select_report( all_btn );
                     show_report_list( true );
@@ -161,71 +146,66 @@ Item {
             }
             Button {
                 id: today_btn;
-                radius: 10;
-                width: 200;
-                height: 200;
+                width: bbox.height * 0.5 - 10;
+                height: bbox.height * 0.5 - 10;
                 icon: "calendar_ico.svg";
-                pointSize: 15;
+                pixelSize: height * 0.1;
+                font: "Chunkfive";
                 label: "Today";
                 color: Colors.blue6;
-                Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-                Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
                 onButtonClick : ReportMethods.report_today();
+            }
+            Button {
+                id: money_btn;
+                width: bbox.height * 0.5 - 10;
+                height: bbox.height * 0.5 - 10;
+                color: Colors.yellow3;
+                label: "Employee";
+                icon: "hardhat_ico.svg";
+                font: "Chunkfive";
+                pixelSize: height * 0.1;
+                onButtonClick : {
+                    select_report( money_btn );
+                    show_report_list( true );
+                }
+            }
+            Button {
+                id: payments_btn;
+                width: bbox.height * 0.5 - 10;
+                height: bbox.height * 0.5 - 10;
+                color: Colors.green3;
+                label: "Payments";
+                icon: "tag_ico.svg";
+                font: "Chunkfive";
+                pixelSize: height * 0.1;
+
             }
 
             Button {
                 id: month_btn;
-                radius: 10;
-                width: 200;
-                height: 200;
-                pointSize: 15;
+                width: bbox.height * 0.5 - 10;
+                height: bbox.height * 0.5 - 10;
+                pixelSize: height * 0.1;
                 icon: "calendar_m_ico.svg";
                 label: "Month";
+                font: "Chunkfive";
                 color: Colors.marine_violet;
-                Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-                Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
                 onButtonClick : ReportMethods.report_this_month();
             }
 
             Button {
                 id: year_btn;
-                radius: 10;
-                height: 200;
-                width: 200;
-                pointSize: 15;
+                height: bbox.height * 0.5 - 10;
+                width: bbox.height * 0.5 - 10;
+                pixelSize: height * 0.1;
                 icon: "calendar_y_ico.svg";
+                font: "Chunkfive";
                 label: "Year";
                 color: Colors.violet3;
-                Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-                Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
                 onButtonClick : ReportMethods.report_this_year();
             }
         }
-        Button {
-            id: money_btn;
-            width: 400;
-            height: 410;
-            anchors.top: reportButtonRow.top;
-            anchors.bottom: reportButtonRow.bottom;
-            color: Colors.yellow3;
-            label: "Employee";
-            icon: "hardhat_ico.svg";
-            pointSize: 25;
-            radius: 10;
-            Behavior on width { PropertyAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-            Behavior on height { PropertyAnimation { duration: 200; easing.type: Easing.InOutCirc; } }
-            onHeightChanged : {
-                if( height == 410 ) {
-                    anchors.bottom = reportButtonRow.bottom;
-                }
-            }
-            onButtonClick : {
-                anchors.bottom = undefined;
-                select_report( money_btn );
-                show_report_list( true );
-            }
-        }
-}//Row
+    }
     FadeView {
         id: reportBox;
         anchors.fill: parent;
@@ -540,6 +520,15 @@ Item {
                         user_detail_slide.hide();
                         item_detail_slide.hide();
                         hour_detail_slide.toggle();
+                    }
+                }
+
+                Button {
+                    icon: "print_ico.svg";
+                    height: detail_slide.height * 0.9;
+                    width: detail_slide.height * 0.9;
+                    onButtonClick : {
+                        App.choice("Print Report?");
                     }
                 }
             }

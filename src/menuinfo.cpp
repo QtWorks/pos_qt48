@@ -119,12 +119,22 @@ void MenuInfo::navigate(const int& item_id )
 
 }
 
-void MenuInfo::append_to_sale(const int& item_id)
+void MenuInfo::append_to_sale(const int& item_id, int qty)
 {
     auto sale = data.get_active_sale();
 
     if( sale ) {
-        sale->addItem( data.find_existing_menu_item( item_id ), true);
+        sale->addItem( data.find_existing_menu_item( item_id ), true, qty);
+    }
+}
+
+void MenuInfo::place_order(const int& sale_id, const int& item_id, const int& qty)
+{
+    auto s = data.find_sale( sale_id );
+    if( s ) {
+        auto menu_item = data.find_existing_menu_item( item_id );
+        if( menu_item )
+            s->add_item_qty( menu_item, qty, true );
     }
 }
 
@@ -164,12 +174,15 @@ void MenuInfo::add_comment(const QString& comment)
     return false;
 }*/
 
-bool MenuInfo::select(const int& item_id)
+bool MenuInfo::select(const int& item_id, int qty)
 {
     current_item = data.find_menu_item( item_id );
     selected_id = ((current_item) ? current_item->id : -1);
 
-    if( !current_item ) return false;
+    if( !current_item ) {
+        if( item_id == -1 ) item_model->clear();
+        return false;
+    }
 
     emit selectedChanged();
     emit item_priceChanged();
@@ -180,7 +193,7 @@ bool MenuInfo::select(const int& item_id)
     if( MenuItem::iscat(current_item) ) return false;
 
     if( current_item->price || current_item->incomplete || current_item->subitem ) {
-        append_to_sale( item_id );
+        append_to_sale( item_id, qty );
         return true;
     }
 

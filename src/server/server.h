@@ -19,7 +19,8 @@
 #include<time.h>
 
 #include "../defs.h"
-#include "../connect.h"
+#include "../result.h"
+//#include "../connect.h"
 #include "../generics.h"
 
 #include <sstream>
@@ -28,6 +29,10 @@
 #define DEFAULT_PORT 3577
 #define SQLEXEC(server, cmd)    mResult = PQexec(mPostgres, (cmd));
 #define SERVER_ROOT_DIR "/home/art/pos/server"
+
+/*
+ALTER SEQUENCE <tablename>_<id>_seq RESTART WITH 0
+*/
 
 typedef std::unique_ptr<Result> RES_UPTR;
 

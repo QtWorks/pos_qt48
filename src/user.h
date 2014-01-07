@@ -11,6 +11,24 @@
 class Item;
 class Sale;
 
+class Session {
+    public:
+
+    std::string type;
+    std::string name;
+    int         user_id;
+    int         id;
+    double     start_amount     = 0.0f;
+    double     total_sales      = 0.0f;
+    double     tendered_cash    = 0.0f;
+    double     short_total     = 0.0f;
+    double     credit_total     = 0.0f;
+    double     cash_count       = 0.0f;
+
+    time_t      start_time;
+    time_t      end_time;
+};
+
 class User {
     std::unique_ptr<Item>   payload;
     std::vector< std::unique_ptr<Item> > hv;
@@ -46,6 +64,19 @@ class User {
         int             clocked_seconds_today = 0;
         int             clocked_seconds_total = 0;
 
+        Session         session_info;
+
+        struct Timecard {
+           std::string  start;
+           std::string  end;
+           std::string  label;
+           int          end_e;
+           int          start_e;
+           int          tdsec;    //seconds today
+           int          tlsec;    //secons total
+        };
+        Timecard        timecard;
+
         User(std::unique_ptr<Item>&& data);
         User(User&& moved_user) : User(std::move(moved_user.payload)) { }
         ~User();
@@ -62,7 +93,8 @@ class User {
             return  (password == pass);
         }
 
-        std::unique_ptr<Item> get_data(void);
+        std::unique_ptr<Item>   get_data(void);
+        std::vector<Item*>      get_timecards();
 };
 
 #endif //#define USER_HEADER_FILE

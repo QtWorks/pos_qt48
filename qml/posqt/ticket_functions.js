@@ -15,12 +15,8 @@ function sub_remove( sub_id )
 
 function remove( item )
 {
-    console.log( "*** Remove leftovers ***");
-    console.log( "Remove requested at id: " + item.item_id );
-    console.log( orderListModel.count );
     var i = item.item_id;
     orderListModel.remove( item.item_id );
-    console.log( orderListModel.count );
     sub_remove( i );
 
     for( var i = 0; i < orderListModel.count ; i++) {
@@ -32,7 +28,6 @@ function remove( item )
 
 function add( item )
 {
-    console.log( "Add item: " + item.item_name );
     if( !item.item_is_sub )
         ticketSubTotal += item.item_total;
     if( virtual ) { //append to the virtual order list
@@ -61,6 +56,8 @@ function split( area, orderList ) {
     var sid = TicketLib.split();
     var vt =  component.createObject( area, { "visible" : false, "orderListModel" : null, "virtual" : true, "sale_id" : sid, "width" : width } );
     vt.orderListModel = virtual_list.createObject(vt);
+    vt.ticketSubTotal = TicketLib.API.get_sale_subtotal( sid );
+    vt.ticketOwed = TicketLib.API.get_sale_owed( sid );
     return vt;
 }
 

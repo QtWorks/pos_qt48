@@ -1,4 +1,6 @@
 #include "data.h"
+#include "server/server.h"
+#include "connect.h"
 
 void DataHandler::reset_menu()
 {

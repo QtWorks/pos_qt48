@@ -32,6 +32,9 @@ class SaleListItem : public ListItem
             AmountRole,
             CustomerRole,
             SaleIdRole,
+            UserIdRole,
+            TableNameRole,
+            GuestsRole,
             RoleCount
         };
 };

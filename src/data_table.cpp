@@ -1,4 +1,6 @@
 #include "data.h"
+#include "server/server.h"
+#include "connect.h"
 
 Sale* DataHandler::find_sale_at_table(const int& table_id) const
 {

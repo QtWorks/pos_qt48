@@ -28,7 +28,6 @@ SOURCES += main.cpp \
     src/menuinfo.cpp \
     src/ticketinfo.cpp \
     src/reports.cpp \
-    src/listitems.cpp \
     src/userinfo.cpp \
     src/item.cpp \
     src/data_sale.cpp \
@@ -45,7 +44,10 @@ SOURCES += main.cpp \
     src/print.cpp \
     src/data_table.cpp \
     src/server_order_cmd.cpp \
-    src/data_reports.cpp
+    src/data_reports.cpp \
+    src/salelistitem.cpp \
+    src/ticketlistitem.cpp \
+    src/tablelistitem.cpp
 LIBS += -L/usr/lib/ -lpq -lpgport -lssl -lcrypto -lkrb5 -lcom_err -lgssapi_krb5 -lz -lcrypt -ldl -lm -pthread
 LIBS += -lcups -Bsymbolic-functions -lk5crypto -lcom_err -lgnutls -L/lib/i386-linux-gnu
 QMAKE_CXXFLAGS += -std=c++11
@@ -179,7 +181,6 @@ HEADERS += \
     src/userinfo.h \
     src/listmodel.h \
     src/menu.h \
-    src/activetablelist.h \
     src/tablelistmodel.h \
     src/ticketlistmodel.h \
     src/menulistmodel.h \
@@ -196,4 +197,5 @@ HEADERS += \
     src/result.h \
     src/empl_cmd.h \
     src/sale_cmd.h \
-    src/command.h
+    src/command.h \
+    src/salelistitem.h

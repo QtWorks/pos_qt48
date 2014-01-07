@@ -8,11 +8,13 @@ Item {
     height: App.screen_h;
 
     property bool shift : false;
+    property bool caps : false;
 
     signal keyClick( string _key );
 
     function show() {
         spacerow.show(800);
+        row3.show(800);
         row2.show(800);
         row0.show(600);
         row1.show(600);
@@ -20,6 +22,7 @@ Item {
 
     function hide() {
         spacerow.hide();
+        row3.hide();
         row2.hide();
         row1.hide();
         row0.hide();
@@ -27,7 +30,7 @@ Item {
 
     Slide {
         id: spacerow;
-        anchors.bottom: parent.bottom; anchors.bottomMargin: root.height * 0.05;
+        anchors.bottom: parent.bottom; anchors.bottomMargin: root.height * 0.01;
 
         property: "x";
         to: 0;
@@ -87,6 +90,7 @@ Item {
 
             anchors.centerIn: parent;
 
+            OSK_Button { label: "caps"; width: root.height * 0.12; onButtonClick: { root.caps = !root.caps; } }
             OSK_Button { label: "a"; }
             OSK_Button { label: "s"; }
             OSK_Button { label: "d"; }
@@ -124,6 +128,34 @@ Item {
             OSK_Button { label: "i"; }
             OSK_Button { label: "o"; }
             OSK_Button { label: "p"; }
+        }
+    }
+    Slide {
+        id: row3;
+        anchors.bottom: row2.top;
+
+        property: "x";
+        to: 0;
+        from: width;
+        width: root.width;
+        height: root.height * 0.07;
+        x: width;
+
+        Row {
+            spacing: 5;
+
+            anchors.centerIn: parent;
+
+            OSK_Button { label: "1"; }
+            OSK_Button { label: "2"; }
+            OSK_Button { label: "3"; }
+            OSK_Button { label: "4"; }
+            OSK_Button { label: "5"; }
+            OSK_Button { label: "6"; }
+            OSK_Button { label: "7"; }
+            OSK_Button { label: "8"; }
+            OSK_Button { label: "9"; }
+            OSK_Button { label: "0"; }
         }
     }
 }

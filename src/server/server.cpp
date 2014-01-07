@@ -3,6 +3,7 @@
 #include "../sale.h"
 #include "../menu.h"
 #include "../itemfactory.h"
+#include "../connect.h"
 #include<QtDebug>
 
 #define RES_UPTR    std::unique_ptr<Result>

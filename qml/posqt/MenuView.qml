@@ -20,6 +20,7 @@ Item {
     property variant catModel : MenuLib.get_catModel();
     property variant itemModel : MenuLib.get_itemModel();
     property int catcount : 0;
+
     //property variant lastClicked : null;
 
     //Method bindings
@@ -33,6 +34,9 @@ Item {
     property variant finalAction : Methods.finalAction;
     property variant backButtonPressed : Methods.backButtonPressed;
 */
+    function quantity_input( quantity ) {
+        Methods.selectItem( "", selected_item_id, quantity );
+    }
 
     function modify_item(userid) {
         cash_input.show();
@@ -53,7 +57,7 @@ Item {
         ticket.y = App.screen_h * 0.005;//38;
         //TicketLib.refresh();
         catlist.positionViewAtIndex( 0, ListView.Beginning );
-
+        MenuLib.api.select(-1);
         Methods.ticketlib   = TicketLib;
         Methods.app         = App;
         Methods.menulib     = MenuLib;
@@ -93,7 +97,7 @@ Item {
                 gridbox.show();
             }
             onItemClick : {
-                selectItem(_name, _id, _issub);
+                selectItem(_name, _id, 1);
                 item_actions.hide();
             }
 
@@ -166,7 +170,7 @@ Item {
             //flickableDirection: Flickable.VerticalFlick;
             //pressDelay: 0;
             boundsBehavior: Flickable.StopAtBounds;
-            flow: GridView.TopToBottom;
+            //flow: GridView.TopToBottom;
             /*add : Transition {
                 NumberAnimation { properties: "x"; from: gridbox.width; duration: 300; easing.type: Easing.InOutCirc; }
                 NumberAnimation { property: "opacity"; from: 0; to: 1.0; duration: 600; easing.type: Easing.InOutCirc; }
@@ -185,7 +189,14 @@ Item {
                         item_actions.hide();
                         if( MenuLib.hassubs(_id) )
                             gridbox.show();
-                        Methods.selectItem(_name, _id, _issub);
+                        Methods.selectItem(_name, _id, 1);
+                    }
+
+                    onItemLongClicked : {
+                        sub_item_actions.hide();
+                        item_actions.hide();
+                        selected_item_id = _id;
+                        App.show_number_input( "Enter Quantity", quantity_input );
                     }
                 }
             }
@@ -199,6 +210,7 @@ Item {
         y: (parent.height/2 - height/2);
         ticketTaxPercent : TicketLib.TaxPercent;
         ticketSubTotal : TicketLib.API.subTotal;
+        snap_to_item : false;
         showEditButton: false;
         showOrderButton: true;
 
@@ -215,9 +227,14 @@ Item {
             }
             gridbox.show();
             sub_item_actions.hide();
-            adjust_actions.hide();
 
-            item_actions.show();
+            if( !item_actions.showing ) {
+                adjust_actions.hide();
+                item_actions.show();
+            } else {
+                item_actions.hide();
+                adjust_actions.show();
+            }
         }
 
         onFinalItemClick : {
@@ -230,9 +247,15 @@ Item {
             }
             gridbox.show();
             sub_item_actions.hide();
-            adjust_actions.hide();
-
-            item_actions.show();
+            //adjust_actions.hide();
+            if( !item_actions.showing ) {
+                adjust_actions.hide();
+                item_actions.show();
+            }
+            else {
+                item_actions.hide();
+                adjust_actions.show();
+            }
         }
 
         onSubItemClick : {

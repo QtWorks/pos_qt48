@@ -1,13 +1,12 @@
 #ifndef POS_DATA_HEADER
 #define POS_DATA_HEADER
 
-#include "connect.h"
 #include "generics.h"
 #include <vector>
 #include <string>
 #include <ctime>
-#include "server/server.h"
-#include "activetablelist.h"
+//#include "server/server.h"
+#include "result.h"
 #include "itemfactory.h"
 #include <QtDebug>
 
@@ -29,6 +28,7 @@ typedef std::vector<std::pair<std::vector<User>::const_iterator, std::unique_ptr
 typedef std::vector<std::unique_ptr<Table> > uTableVector;
 typedef std::vector< std::pair<Table*,Sale*> > tspair_vector;
 
+class DataServer;
 class DataHandler {
 
         std::vector<std::unique_ptr<Sale>>  Sales;
@@ -90,7 +90,7 @@ public: //Logs
         void    fill_user_hours(User*);
         void    update_user_sale_totals(User*);
         void    delete_user(const int&);
-
+        void    print_session(Session *);
     public:
         //Tables
         inline Table*       getActiveTable(void) { return active_table; }
@@ -155,11 +155,11 @@ public: //Logs
         void    erase_sale(int);
         void    finalize_sale(const int& sale_id);
         void    close_sale(const int&);
-        bool    pay_sale(const int&,const double&);
-        bool    pay_sale(Sale*,     const double&);
-        bool    pay_sale_credit(Sale*,const double&);
+        bool    pay_sale(const int&,const double&, const bool&);
+        bool    pay_sale(Sale*,     const double&, const bool&);
+        bool    pay_sale_credit(Sale*,const double&, const bool&);
         void    void_sale(const int& sale_id, const int& emp_id);
-
+        void    transfer_sale_ownership(const int&, const int&);
         void    sale_transfer_item(Sale*,Sale*,OrderedItem*);
         void    sale_combine(Sale*, Sale*);
 

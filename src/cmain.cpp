@@ -1,6 +1,7 @@
 #include "cmain.h"
 #include <QObject>
 #include <QtDebug>
+#include "salelistitem.h"
 
 CMain::CMain(QObject* parent) :
     QObject(parent),
@@ -10,6 +11,7 @@ CMain::CMain(QObject* parent) :
     model.user_sales = std::unique_ptr<ListModel>(new ListModel(new SaleListItem()));
     model.tables = std::unique_ptr<ListModel>(new ListModel(new TableListItem()));
     model.table_sales = std::unique_ptr<ListModel>(new ListModel(new SaleListItem()));
+    model.all_sales = std::unique_ptr<ListModel>(new ListModel(new SaleListItem()));
 }
 
 int CMain::check_user_login(const std::string& pass)
@@ -152,4 +154,15 @@ int CMain::get_user_id(const QString& pass)
     if( user )
         return user->id;
     return -1;
+}
+
+ListModel* CMain::allSaleModel()
+{
+    model.all_sales->clear();
+    auto& sales = mData->getSaleData();
+    for( const auto& sale : sales ) {
+        model.all_sales->appendRow(new SaleListItem(sale.get()));
+    }
+
+    return model.all_sales.get();
 }

@@ -1,5 +1,6 @@
 #include "data.h"
 #include "server/server.h"
+#include "connect.h"
 #include <algorithm>
 
 DataHandler::DataHandler() :
@@ -64,7 +65,7 @@ DataHandler::DataHandler() :
             auto menu_item = find_existing_menu_item( order->property<int>("menu_id") );
 
             std::unique_ptr<OrderedItem> oi(new OrderedItem(menu_item, std::move(order) ));
-            sale_item->addItem(std::move(oi), true);
+            sale_item->addItem(std::move(oi), true, oi->quantity);
         }
 
         //Finalize all the changes

@@ -26,10 +26,11 @@ Item {
 
     Component.onCompleted : {
         User.api.refresh();
+        uName = User.api.firstName;
+        uTitle = User.api.title;
         //Show timeclock slide w/o animation
         timeclock_slide.y = rootScreen.height * 0.01;// - timeclock_slide.height * 1.3;
         //Hide sale info slide w/o animation
-        //actions_slide.x = -actions_slide.width;
         actions_slide.show( 0 );
         if( User.api.clockedin ) {
             timeclock_slide.y = rootScreen.height - timeclock_slide.height * 1.3;
@@ -53,7 +54,7 @@ Item {
         TicketLib.refresh();
 
         ticket_view.ticket_editable = true;
-        ticket_view.ticket_id = saleid;
+        ticket_view.ticket_id = TicketLib.API.saleId;//saleid;
         ticket_view.show();
     }
 
@@ -93,6 +94,7 @@ Item {
                         height: table_button_height;
                         radius: 5;
                         color: Colors.index( table_id + 1 );
+                        sensitive: false;
                         onButtonClick : {
                             ticket_view.color = Colors.make( color, "dd" );
                             TicketLib.tableid = table_id;
@@ -379,9 +381,14 @@ Item {
         width: App.screen_w;
         height: App.screen_h
         ticket_user: User.title + ": " + User.first_name;
+        snap_to_item: false;
 
         onDoneClick : {
             hide();
+        }
+
+        onTransfer : {
+
         }
 
         onClosed : {
@@ -406,5 +413,11 @@ Item {
     UserIcon {
         userName: uName;
         userTitle: uTitle;
+    }
+
+    function transfer_check( password ) {
+        if( App._API.check_user_level( _password ) === 2 ) {
+            return 1;
+        }
     }
 }

@@ -1,5 +1,6 @@
 #include "ticketinfo.h"
 #include "ticketlistmodel.h"
+#include "salelistitem.h"
 
 TicketInfo::TicketInfo(QObject* parent) :
     QObject(parent),
@@ -7,6 +8,7 @@ TicketInfo::TicketInfo(QObject* parent) :
     printer(Printer::Instance())
 {
     model = new ListModel(new TicketListItem());
+    all_sales = std::unique_ptr<ListModel>(new ListModel(new SaleListItem()));
 }
 
 TicketInfo::~TicketInfo()
@@ -14,6 +16,24 @@ TicketInfo::~TicketInfo()
     delete model;
     model = nullptr;
 }
+
+double TicketInfo::subTotal()    { return (sale) ? sale->total - sale->tax: 0.0f; }
+double TicketInfo::Total()       { return (sale) ? sale->total : -1.0f; }
+double TicketInfo::taxTotal()    { return (sale) ? sale->tax : -1.0f; }
+int TicketInfo::tableID()        { return (sale) ? sale->table_number : -1; }
+int TicketInfo::saveCount()      { return (sale) ? sale->items_before_save : 0; }
+int TicketInfo::saleId()         { return (sale) ? sale->id : -1; }
+double TicketInfo::cash_paid()   { return (sale) ? sale->tendered : 0; }
+double TicketInfo::credit_paid() { return (sale) ? sale->cc_paid : 0; }
+double TicketInfo::owed()
+{
+    if( sale ) {
+        return (sale->owed);
+    }
+    return 0;
+}
+int  TicketInfo::guests()        { return (sale) ? sale->guests : -1; }
+double TicketInfo::tip_percent() { return (sale) ? sale->tip_percent : 0.0f; }
 
 void TicketInfo::activate_order(const int& item_id)
 {
@@ -64,7 +84,11 @@ void TicketInfo::updateListAdd()
 void TicketInfo::refresh(void)
 {
     //updateListAdd();
-    updateListModel();
+    if( sale ) {
+        updateListModel();
+    } else {
+        model->clear();
+    }
     emit ticketListModelChanged();
     emit subTotalChanged();
     emit taxTotalChanged();
@@ -73,6 +97,9 @@ void TicketInfo::refresh(void)
     emit credit_paidChanged();
     emit cash_paidChanged();
     emit owedChanged();
+    emit guestsChanged();
+    emit allSaleModelChanged();
+    emit tip_percentChanged();
 }
 
 void TicketInfo::void_item(const int& item_id, const int& user_id)
@@ -159,7 +186,7 @@ void TicketInfo::unsplit(const int& splitid)
         i = removed_sale->item_count;
     }
 
-    data.pay_sale(removed_sale, 0.0f);
+    data.pay_sale(removed_sale, 0.0f, false);
 }
 
 void TicketInfo::combine( const int& to_id, const int& from_id )
@@ -174,12 +201,17 @@ void TicketInfo::combine( const int& to_id, const int& from_id )
     while( i ) {
         const auto& sale_data = from->get_items();
         if( !sale_data[i - 1]->subitem ) {
-            transfer( i - 1, sale->id, from->id );
+            transfer( i - 1, to_id, from_id );
         }
         i--;// = from->item_count;
     }
 
-    data.pay_sale(from, 0);
+    //The from Ticket is erased so drop its pointer if
+    //still holding it.
+    if( sale && sale->id == from_id ) {
+        sale = nullptr;
+    }
+    data.pay_sale(from, 0, false);
     data.erase_sale( from_id );
 }
 
@@ -213,18 +245,18 @@ void TicketInfo::close()
     sale = nullptr;
 }
 
-bool TicketInfo::pay_cash(const double& amount)
+bool TicketInfo::pay_cash(const double& amount, bool print)
 {
-    bool result = data.pay_sale( sale, amount );
+    bool result = data.pay_sale( sale, amount, print );
     if( result )
         sale = nullptr;
     refresh();
     return result;
 }
 
-bool TicketInfo::pay_credit(const double& amount)
+bool TicketInfo::pay_credit(const double& amount, bool print)
 {
-    bool result = data.pay_sale_credit( sale, amount );
+    bool result = data.pay_sale_credit( sale, amount, print );
     if( result )
         sale = nullptr;
     refresh();
@@ -236,4 +268,62 @@ void TicketInfo::print(const int& sale_id)
 {
     auto ps = data.find_sale( sale_id );
     printer.print( ps );
+}
+
+void TicketInfo::transfer_ownership(const int& userid)
+{
+    if( !sale && userid > -1) return;
+    //sale->user_id = userid;
+}
+
+ListModel* TicketInfo::allSaleModel()
+{
+    all_sales->clear();
+    auto& sales = data.getSaleData();
+    for( const auto& s : sales ) {
+        if( sale && sale->id != s->id )
+            all_sales->appendRow(new SaleListItem(s.get()));
+    }
+
+    return all_sales.get();
+}
+
+double TicketInfo::get_sale_subtotal(const int& saleid)
+{
+    auto s = data.find_sale( saleid );
+    if( s )
+        return s->sub_total;
+    return -1.0f;
+}
+
+double TicketInfo::get_sale_owed(const int& saleid)
+{
+    auto s = data.find_sale( saleid );
+    if( s ) return s->owed;
+    return -1.0f;
+}
+
+void TicketInfo::set_sale_guests(const int& saleid, const int& guests)
+{
+    auto s = data.find_sale( saleid );
+    if( s ) {
+        s->guests = guests;
+        data.save_sale( saleid );
+
+        if( sale && sale->id == saleid )
+            emit guestsChanged();
+    }
+}
+
+void TicketInfo::set_sale_tip(const int& saleid, const double& tip)
+{
+    auto s = data.find_sale( saleid );
+    if( s ) {
+        if( tip > -0.99 && tip < 100.000001f )
+        s->tip_percent = tip;
+        data.save_sale( saleid );
+
+        if( sale && sale->id == saleid )
+            emit tip_percentChanged();
+    }
 }

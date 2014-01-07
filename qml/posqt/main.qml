@@ -54,9 +54,15 @@ Rectangle {
     function disableNavbar() {  actionArea.enabled = false; }
     function hideNavbar()    {  navback.y = navback.height; }//actions.height = 0; }
     function navBack()       {  navback.back(); }
-    function hide_choice()   { noticePopup.hide(); } //action_slider.showing = false; }
+    function hide_choice()   { noticePopup.hide(0); } //action_slider.showing = false; }
     function show_osk( callback )         { App.keyboard_callback = callback; keyboard.show(); }
     function hide_osk()         { keyboard.hide(); }
+    function keypad_show() { keypad.show(); }
+    function show_number_input( promt ) {
+        number_input.promt = promt;
+        number_input.show();
+    }
+
     function load_subview( component ) {
         subview.source = "";
         subview.source = component;
@@ -66,6 +72,7 @@ Rectangle {
         if( action_slider.showing ) {
             noticePopup.message = text;
             noticePopup.showChoice = true;
+            action_slider.show();
             noticePopup.show();
             return;
         }
@@ -167,6 +174,40 @@ Rectangle {
         }
     }
 
+    LoginPad {
+        id: keypad;
+        bColor: Colors.make( Colors.blue3, "bb" );
+
+        onOkClick : {
+            if( App.keypad_ok_callback ) {
+                if( App.keypad_ok_callback( _password ) )
+                    hide();
+                else
+                    fail();
+            }
+        }
+
+        onXClick : {
+            if( App.keypad_cancel_callback )
+                App.keypad_cancel_callback();
+            hide();
+        }
+    }
+
+    CashCountView {
+        id: number_input;
+        color: Colors.make( Colors.blue3, "aa" );
+
+        onReject : {
+            hide();
+        }
+
+        onAccept : {
+            App.number_input_accept( total );
+            hide();
+        }
+    }
+
     FadeView {
         id: back_fader;
         duration: 300;
@@ -235,6 +276,11 @@ Rectangle {
                     return;
                 back_fader.hide();
                 y = height;
+                if( App.backCB ) {
+                    App.backCB();
+                    return;
+                }
+
                 if( App.curViewName == "UserView" ) {
                     App.logoutUser();
                     App.setBackCB( null );
@@ -329,7 +375,7 @@ Rectangle {
                     wrapMode: Text.Wrap;
                     elide: Text.ElideRight;
                     color: "white";
-                    font.pixelSize: (text.length > 50) ? parent.height * 0.1 : parent.height * 0.2;
+                    font.pixelSize: (text.length > 50) ? parent.height * 0.15 : parent.height * 0.2;
                     maximumLineCount: 5;
                     verticalAlignment: Text.AlignVCenter;
                     horizontalAlignment: Text.AlignHCenter;
@@ -352,11 +398,11 @@ Rectangle {
                     icon: "x_ico.svg";
                     font: "Chunkfive";
                     pixelSize: height * 0.15;
-                    //pointSize: 20;
                     radius: 5;
                     visible: false;
                     onButtonClick : {
-                        App.popupCB( false );
+                        if( App.popupCB )
+                            App.popupCB( false );
                         action_slider.toggle();
                     }
                 }
@@ -373,7 +419,8 @@ Rectangle {
                     radius: 5;
                     onButtonClick: {
                         if( noticePopup.showChoice ) {
-                            App.popupCB( true );
+                            if( App.popupCB )
+                                App.popupCB( true );
                         }
                         action_slider.toggle();
                     }

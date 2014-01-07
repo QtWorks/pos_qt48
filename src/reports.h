@@ -135,6 +135,35 @@ class SaleReportItem : public ListItem
             void setRoles();
 };
 
+class ETimeCardItem : public ListItem {
+public:
+    QHash<int, QByteArray> mRoles;
+    int         start_epoch;
+    int         end_epoch;
+    std::string start_time;
+    std::string end_time;
+    int         seconds;
+
+    ETimeCardItem(Item*);
+
+    QHash<int, QByteArray> roleNames() const { return mRoles; }
+    QString id() const { return QString("undefined"); }
+
+    enum Roles {
+        StartEpochRole = Qt::UserRole + 1,
+        EndEpochRole,
+        StartTimeRole,
+        EndTimeRole,
+        SecondsRole,
+        RoleCount
+    };
+
+    QVariant data(int) const;
+
+private:
+    void setRoles();
+};
+
 //!Class responsible for fetching sale data and structuring report datag
 class Reports : public QObject {
     DataHandler&    data;
@@ -143,6 +172,7 @@ class Reports : public QObject {
     ListModel*      employee_sales;
     ListModel*      item_details;
     ListModel*      hour_details;
+    ListModel*      employee_timecards;
 
     //Used to display picked sale
     std::unique_ptr<Sale> dummySale;
@@ -157,6 +187,7 @@ class Reports : public QObject {
     Q_PROPERTY(ListModel* employeeSaleModel READ employeeSaleModel NOTIFY employeeSaleModelChanged)
     Q_PROPERTY(ListModel* itemDetailSaleModel READ itemDetailSaleModel NOTIFY itemDetailSaleModelChanged)
     Q_PROPERTY(ListModel* hourDetailSaleModel READ hourDetailSaleModel NOTIFY hourDetailSaleModelChanged)
+    Q_PROPERTY(ListModel* empTimecardModel  READ empTimecardModel NOTIFY empTimecardModelChanged)
 
     //Selected date totals
     Q_PROPERTY(double dateTotal READ dateTotal NOTIFY dateTotalChanged)
@@ -177,6 +208,7 @@ class Reports : public QObject {
         Q_INVOKABLE void get_month(const int&, const int&);
         Q_INVOKABLE void get_day(const int&, const int&, const int&);
         Q_INVOKABLE void get_sale(const int&);
+        Q_INVOKABLE void get_emp_hours(const int&);
         Q_INVOKABLE void get_today();
         Q_INVOKABLE void report_date_stats(int,int,int);
         Q_INVOKABLE void print_sale();
@@ -187,6 +219,7 @@ class Reports : public QObject {
         inline ListModel* employeeSaleModel() { return employee_sales; }
         inline ListModel* itemDetailSaleModel() { return item_details; }
         inline ListModel* hourDetailSaleModel() { return hour_details; }
+        inline ListModel* empTimecardModel() { return employee_timecards; }
 
         inline double   dateTotal()         { return (date_stats) ? date_stats->property<double>("total_sales") : 0; }
         inline double   dateCreditTotal()   { return (date_stats) ? date_stats->property<double>("credit_charges") : 0; }
@@ -201,6 +234,7 @@ class Reports : public QObject {
         void employeeSaleModelChanged();
         void itemDetailSaleModelChanged();
         void hourDetailSaleModelChanged();
+        void empTimecardModelChanged();
 
         void dateTotalChanged();
         void dateCreditTotalChanged();

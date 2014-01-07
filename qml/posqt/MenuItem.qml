@@ -8,6 +8,7 @@ Button {
     label: "";//item_name;
 
     signal itemClicked(variant _name, variant _id, variant _issub);
+    signal itemLongClicked(variant _name, variant _id, variant _issub);
 
     onCancelClick : {
         itemClicked(item_name, item_id, item_issub);
@@ -15,6 +16,10 @@ Button {
 
     onButtonClick : {
         itemClicked(item_name, item_id, item_issub);
+    }
+
+    onLongClick : {
+        itemLongClicked(item_name, item_id, item_issub)
     }
 
     Text {

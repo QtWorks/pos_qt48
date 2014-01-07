@@ -78,6 +78,7 @@ FadeView {
                         pixelSize: height * 0.2;
                         textColor: "white";
                         label: user_name;
+                        sensitive: true;
 
                         onButtonClick : {
                             if( user_name == "add_user" ) {

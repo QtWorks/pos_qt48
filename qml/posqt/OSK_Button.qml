@@ -11,6 +11,9 @@ Button {
     onButtonClick: {
         if( label.length == 1 ) {
             root.keyClick( label )
+            if( rshift ) {
+                root.shift = false;
+            }
         }
         else {
             if( label === "BACKSPACE" || label === "backspace" )
@@ -21,11 +24,23 @@ Button {
     }
 
     property bool rshift : root.shift;
+    property bool rcaps : root.caps;
+
+    onRcapsChanged : {
+        if( rcaps ) {
+            root.shift = false;
+            label = label.toUpperCase();
+        }
+        else {
+            root.shift = false;
+            label = label.toLowerCase();
+        }
+    }
 
     onRshiftChanged : {
-        if( rshift )
+        if( !rcaps && rshift )
             label = label.toUpperCase();
-        else
+        else if( !rcaps )
             label = label.toLowerCase();
     }
 }

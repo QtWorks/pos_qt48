@@ -44,6 +44,7 @@ FadeView {
 
     function change_item_name( newname )
     {
+        console.log( newname );
         Settings.api.set_itemname( newname );
         item_edit_slide.show();
     }
@@ -77,7 +78,7 @@ FadeView {
         from: -height;
         to: 0;
         width: App.screen_w * 0.45;
-        height: App.screen_h * 0.85;
+        height: App.screen_h * 0.9;
         color: "#99000000";
 
         Item {
@@ -89,8 +90,8 @@ FadeView {
             //ListView {
             GridView {
                 id: category_list;
-                cellHeight: parent.height/3;
-                cellWidth: parent.width/3;
+                cellHeight: parent.height/4;
+                cellWidth: parent.width/4;
                 snapMode: GridView.SnapOneRow;
                 flow: GridView.TopToBottom;
                 boundsBehavior: Flickable.StopAtBounds;
@@ -100,12 +101,9 @@ FadeView {
                 Component {
                     id: category;
                     MenuItem {
-                        height: category_list.height/3 - 10;
-                        width: category_list.width/3 - 10;
+                        height: category_list.height/4 - 5;
+                        width: category_list.width/4 - 5;
                         color: Colors.green4;
-                        //sensitive: true;
-                        //act_on_cancel: true;
-                        radius: 3;
                         onItemClicked: {
                             if( item_name === "__ADD_ITEM__" ) {
                                 Settings.name_change_cb = create_newitem;
@@ -328,12 +326,14 @@ FadeView {
         onHalfShown : {
             price_input.clear();
             price_input.show(Menu.api.item_price);
+            input.show();
             price_slide.show();
         }
 
         onClicked : {
             price_input.hide();
             price_slide.hide();
+            input.hide();
             hide();
         }
         Slide {
@@ -380,7 +380,6 @@ FadeView {
                     radius: 10;
                     onButtonClick : {
                         Settings.set_itemprice( price_input.total );
-
                         price_slide.hide( 100 );
                         price_input.hide();
                         item_price_screen.hide(1000);
@@ -393,6 +392,42 @@ FadeView {
             id: price_input;
             spacing: 10;
         }
+        Slide {
+            id: input;
+            color: "#99000000";
+            anchors.bottom: parent.bottom; anchors.bottomMargin: parent.height * 0.04;
+            height: parent.height * 0.25; width: parent.width; x: width;
+            property: "x"; to: 0; from: width;
+
+            Image {
+                id: total_ico;
+                source: "tag_ico.svg"
+                sourceSize.height: root.height * 0.2;
+                sourceSize.width: root.height * 0.2;
+                anchors.left: parent.left; anchors.leftMargin: parent.width * 0.02;
+                anchors.verticalCenter: parent.verticalCenter;
+            }
+
+            Text {
+                anchors.left: display_text.left;
+                anchors.top: display_text.top;
+                anchors.bottom: display_text.bottom;
+                font.family: "Molot";
+                font.pixelSize: root.height * 0.1;
+                color: "#22595959";
+                text: price_input.total.toFixed(2);
+            }
+
+            Text {
+                id: display_text;
+                anchors.centerIn: parent;
+                font.family: "Molot";
+                font.pixelSize: root.height * 0.1;
+                color: "white";
+                text: price_input._raw;
+            }
+        }
+
     }
 
     TextInputView {
@@ -401,7 +436,7 @@ FadeView {
 
         onAccept : {
             hide();
-            Settings.name_change_cb( text );
+            Settings.name_change_cb( _text );
         }
 
         onReject : {

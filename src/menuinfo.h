@@ -26,7 +26,7 @@ class MenuInfo : public QObject {
     MenuItem*       current_item    = nullptr;
 
 //    bool select_menuitem_ptr    (const std::unique_ptr<MenuItem>&);
-    void append_to_sale         (const int&);
+    void append_to_sale         (const int&, int);
 
     void update_cat_list();
     void update_item_list();
@@ -46,7 +46,8 @@ class MenuInfo : public QObject {
 
     public:
     //Methods
-        Q_INVOKABLE bool    select      (const int& item_id);
+        Q_INVOKABLE void    place_order (const int& sale_id, const int& item_id, const int& qty);
+        Q_INVOKABLE bool    select      (const int& item_id, int qty = 1);
         Q_INVOKABLE void    navigate    (const int& item_id);
         Q_INVOKABLE void    add_comment (const QString&);
         Q_INVOKABLE int     create_new_item(const int& parent_id, const QString& name);

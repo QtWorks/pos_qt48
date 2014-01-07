@@ -28,10 +28,10 @@ function selectCategory(name, id) {
     //return index;
 }
 
-function selectItem(name, id, issub) {
+function selectItem(name, id, qty) {
     selected_item_name  =   name;
     selected_item_id    =   id;
-    if ( menulib.select( id ) ) {
+    if ( menulib.select( id, qty ) ) {
         ticketlib.updateListAdd();
         ticket.ticketSubTotal = ticketlib.API.subTotal;
         ticket.ticketOwed = ticketlib.API.owed;
@@ -54,18 +54,21 @@ function navigateTo(item_id) {
 }
 
 function printAction( print ) {
+    //app.hide_choice();
     if( print ) {
         ticketlib.API.print( ticketlib.API.saleId );
         app.choice( "Another Copy?", printAction );
     }
+
+    app.hide_choice();
 }
 
 function finalAction( save ) {
+    app.setBackCB( null );
     if( save ) {
         ticketlib.finalize_changes();
         ticketlib.refresh();
         //app.hide_choice();
-        app.setBackCB( null );
         app.choice( "Print Receipt?", printAction );
     }
     else {
@@ -78,6 +81,9 @@ function finalAction( save ) {
 
 function backButtonPressed() {
     //Hijack the back press and apply save logic
+    item_actions.hide();
+    adjust_actions.hide();
+    sub_item_actions.hide();
    if( ticketlib.unsaved() || ticketlib.API.removed_count() ) {
        app.choice( "Would you like to commit changes?", finalAction );
    }

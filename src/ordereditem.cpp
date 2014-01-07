@@ -27,6 +27,7 @@ OrderedItem::OrderedItem(const MenuItem* menu_item, std::unique_ptr<Item>&& data
         price   =   data->property<double>("amount");
         total   =   price;
         unique_id = data->property<int>("uid");
+        quantity = data->property<int>("quantity");
     }
 }
 
@@ -63,6 +64,7 @@ Item* OrderedItem::to_item() const
     item->push_property( "total",       total );
     item->push_property( "menu_id",     menu_id );
     item->push_property( "sale_id",     sale_id );
+    item->push_property( "quantity",    quantity);
     if( parent )
         item->push_property( "modifies",parent->unique_id );
     else
@@ -86,7 +88,7 @@ void OrderedItem::clear(void)
 {
     subitems.clear();
     sub_count = 0;
-    total = price;
+    total = price * quantity;
 }
 
 void OrderedItem::delItem(const int& item_id)

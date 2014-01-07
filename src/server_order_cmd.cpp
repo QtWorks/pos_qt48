@@ -1,10 +1,12 @@
 #include "server/server.h"
+#include "connect.h"
+
 
 template<> RES_UPTR DataServer::command(WriteOrderCmd * cmd)
 {
-    sql << "INSERT INTO sold_items(name, menu_id, sale_id, amount, modifies, order_id, tstamp) VALUES(";
+    sql << "INSERT INTO sold_items(name, menu_id, sale_id, amount, modifies, order_id,quantity, tstamp) VALUES(";
     sql << "'" << cmd->name << "'," << cmd->menu_id  << "," << cmd->sale_id << "," << cmd->amount
-        << "," << cmd->modifies << "," << cmd->order_id << ",'" << cmd->start_t << "')";
+        << "," << cmd->modifies << "," << cmd->order_id << "," << cmd->quantity << ",'" << cmd->start_t << "')";
     sql << " RETURNING id;";
 
     run_sql();
@@ -41,9 +43,9 @@ template<> RES_UPTR DataServer::command(DeleteAllSaleOrdersCmd* cmd)
 
 template<> RES_UPTR DataServer::command(InsertOrderCmd* cmd)
 {
-    sql << "INSERT INTO sold_items(name, menu_id, sale_id, amount, modifies, order_id, tstamp)";
+    sql << "INSERT INTO sold_items(name, menu_id, sale_id, amount, modifies, order_id, quantity, tstamp)";
     sql << " VALUES(" << cmd->name << "," << cmd->menu_id << "," << cmd->sale_id << "," << cmd->amount;
-    sql << "," << cmd->modifies << "," << cmd->order_id << "now() ) ";
+    sql << "," << cmd->modifies << "," << cmd->order_id << "," << cmd->multiply << ",now() ) ";
 
     run_sql();
     clr_sql();

@@ -13,6 +13,7 @@ Item {
     property double ticketTaxPercent : 0.06;
     property double ticketTotal     : TicketLib.API.Total;
     property double ticketOwed      : TicketLib.API.owed;
+    property double ticketTip       : TicketLib.API.tip_percent;
     property alias  userName        : user.text;
     property bool   split_mode : TicketLib.split_mode;
     property bool   virtual : false;
@@ -32,6 +33,8 @@ Item {
     property int count : ticketView.count;
     property int itemWidth : (virtual) ? 400 : 500;
     property alias bgColor : ticketBG.color;
+    property alias selected : indicator.visible;
+    property bool snap_to_item : true;
 
     //Method bindings
     function split( area, orderList ) { return Methods.split( area, orderList); }
@@ -61,6 +64,13 @@ Item {
     onTicketSubTotalChanged : {
         ticketTaxTotal = ticketSubTotal * ticketTaxPercent;
         ticketTotal = ticketSubTotal + ticketTaxTotal;
+        ticketTotal = ticketTotal + (ticketTotal * ticketTip/100);
+    }
+
+    onTicketTipChanged : {
+        ticketTaxTotal = ticketSubTotal * ticketTaxPercent;
+        ticketTotal = ticketSubTotal + ticketTaxTotal;
+        ticketTotal = ticketTotal + (ticketTotal * ticketTip/100)
     }
 
     function splitSelect( item_id ) {
@@ -114,6 +124,14 @@ Item {
         height: parent.height * 0.15;
 
         Behavior on scale { PropertyAnimation { duration: 200; } }
+
+        Rectangle {
+            id: indicator;
+            radius: 10;
+            anchors.fill: parent;
+            color: Colors.make( Colors.blue3, "99" );
+            visible: false;
+        }
 
         Ticket_amount {
         }

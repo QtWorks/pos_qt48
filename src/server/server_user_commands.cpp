@@ -1,9 +1,9 @@
 #include "server.h"
 #include "../item.h"
-
+#include "../connect.h"
 #include <utility>
 
-template<> std::unique_ptr<Result> DataServer::command(CreateEmployeeCmd* cmd)
+template<> std::unique_ptr<Result> DataServer::command(CreateEmployeeCmd* UNUSED(cmd))
 {
     sql << "INSERT INTO employee(level) VALUES(0) RETURNING id";
     run_sql();

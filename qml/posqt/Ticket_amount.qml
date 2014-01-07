@@ -7,15 +7,17 @@ Item {
 
     anchors.fill: parent;
     Column {
-        spacing: 10;
+        spacing: root.height * 0.3;
         anchors.verticalCenter: parent.verticalCenter;
-        anchors.left: parent.left; anchors.leftMargin:  parent.width * 0.1;
+        anchors.left: parent.left; anchors.leftMargin:  parent.width * 0.02;
 
         Text {
             font.pointSize: 18;
             font.family: "Chunkfive";
             color: Colors.make( Colors.green3, "88" );
-            text: "Paid: $" + (ticketTotal - ticketOwed).toFixed(2);
+            text:
+            "Paid: $" + (ticketTotal -
+            (ticketOwed + (ticketOwed * TicketLib.API.tip_percent/100))).toFixed(2);
         }
 
         Text {
@@ -25,6 +27,17 @@ Item {
             text: "Owed: $" + ticketOwed.toFixed(2);
         }
     }
+
+    Text {
+        anchors.left: parent.left; anchors.leftMargin: parent.width * 0.42;
+        anchors.bottom: parent.bottom; anchors.bottomMargin: parent.height * 0.12;
+        font.pixelSize: root.height * 0.25;
+        font.family: "Chunkfive";
+        color: "#99dadada";
+        visible: TicketLib.API.tip_percent;
+        text: "Tip: " + TicketLib.API.tip_percent + "%";
+    }
+
     Column {
         spacing: 1;
         anchors.verticalCenter: parent.verticalCenter;
@@ -37,7 +50,7 @@ Item {
             font.pointSize: 18;
             Text {
                 id: subtotal_text;
-                anchors.bottom: parent.bottom; //anchors.bottomMargin: root.height * 0.2;
+                anchors.bottom: parent.bottom;
                 anchors.left: parent.right; anchors.leftMargin: 10;
                 font.pointSize: 15;
                 font.family: "Helvetica";
@@ -74,7 +87,7 @@ Item {
                     font.pointSize: 20;
                     font.family: "Helvetica";
                     color: Colors.main_green;
-                    text: "$" + (Number(ticketSubTotal.toFixed(2)) + Number((ticketSubTotal * 0.06).toFixed(2))).toFixed(2);
+                    text: "$" + ticketTotal.toFixed(2);//(Number(ticketSubTotal.toFixed(2)) + Number((ticketSubTotal * 0.06).toFixed(2))).toFixed(2);
                 }
         }
     }

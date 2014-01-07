@@ -12,11 +12,13 @@ Sale::Sale(std::unique_ptr<Item>&& data) :
     change(payload->property<double>("change")),
     tax(payload->property<double>("tax")),
     cc_paid(payload->property<double>("cc_paid")),
+    tip_percent(payload->property<int>("tip")),
     open(payload->property<int>("open")),
     item_count(payload->property<int>("item_count")),
     table_number(payload->property<int>("table")),
     user_id(payload->property<int>("emp")),
     session(payload->property<int>("session")),
+    guests(payload->property<int>("guests")),
     start_t(payload->property<std::string>("start_t"))
 {
     tax = (sub_total * tax_percent);
@@ -38,7 +40,7 @@ void Sale::pay_cash(const double& amount)
 
 void Sale::pay_credit(const double& amount)
 {
-    if( (amount - owed) > 0.0099f ) {
+    if( (owed - amount) > 0.0099f ) {
         owed -= amount;
         cc_paid += amount;
         return;
@@ -57,7 +59,6 @@ int Sale::add_abstract(const std::unique_ptr<OrderedItem>& item)
         return 0;
     }
     else if( item->total ) { //Modifier
-        std::cout << "Add modifier" << std::endl;
         active_order->addItem( item.get() );
         return 0;
     }
@@ -123,9 +124,11 @@ int Sale::add_concrete(const std::unique_ptr<OrderedItem>& item)
     return 0;
 }
 
-OrderedItem* Sale::addItem(std::unique_ptr<OrderedItem>&& item_ptr, bool iscounted)
+OrderedItem* Sale::addItem(std::unique_ptr<OrderedItem>&& item_ptr, bool iscounted, int qty)
 {
     std::unique_ptr<OrderedItem> item = std::move(item_ptr);
+    item->quantity = qty;
+    item->total = item->total * qty;
     item->id = items.size();
     item->sale_id = id;
 
@@ -163,15 +166,23 @@ OrderedItem* Sale::addItem(std::unique_ptr<OrderedItem>&& item_ptr, bool iscount
         items.insert( before, std::move(item) );
     }
 
-    item_count++;
+    item_count+= qty;
     refresh_ids();
 
     return ret;
 }
 
-OrderedItem* Sale::addItem(const MenuItem* menu_item, bool iscounted)
+OrderedItem* Sale::addItem(const MenuItem* menu_item, bool iscounted, int qty)
 {
     std::unique_ptr<OrderedItem> order(new OrderedItem(menu_item, nullptr));
+    return addItem(std::move(order), iscounted, qty);
+}
+
+OrderedItem* Sale::add_item_qty(const MenuItem* menu_item, const int& qty, bool iscounted )
+{
+    std::unique_ptr<OrderedItem> order(new OrderedItem(menu_item, nullptr));
+    order->quantity = qty;
+
     return addItem(std::move(order), iscounted);
 }
 
@@ -242,6 +253,7 @@ void Sale::delete_order(const int& item_id)
     tax = sub_total * tax_percent;
     total = sub_total + tax;
     owed = total - cc_paid - tendered;
+    item_count -= item->quantity;
 
     auto un_it = std::find_if( std::begin(unsaved), std::end(unsaved),
                                [&]( OrderedItem* cmp ) { return cmp->id == item_id; });
@@ -259,7 +271,6 @@ void Sale::delete_order(const int& item_id)
     }
 
     items.erase(it);
-    item_count--;
 }
 
 void Sale::void_item(const int& itemid, const int& user_id)
@@ -407,6 +418,8 @@ std::unique_ptr<Item> Sale::flatten(void) const
     item->property<int>("session") = session;
     item->property<double>("cc_paid") = cc_paid;
     item->property<double>("change") = change;
+    item->property<int>("guests") = guests;
+    item->property<int>("tip") = tip_percent;
 
     return std::unique_ptr<Item>(item);
 }

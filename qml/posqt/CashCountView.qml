@@ -9,6 +9,7 @@ FadeView {
     property alias accept_text : accept_btn.label;
     property alias reject_text : reject_btn.label;
     property alias total : cash_input.total;
+    property alias promt : promt_text.text;
     property double hint : 0.0;
     default property alias children : content.children;
 
@@ -65,7 +66,7 @@ FadeView {
                 pointSize: 20;
                 color: Colors.green3;
                 icon: "check_white_ico.svg";
-                label: "Pay";
+                label: "Accept";
                 width: pay_action_slide.height * 0.9;
                 height: width;
                 radius: 10;
@@ -117,4 +118,12 @@ FadeView {
         }
     }
 
+    Text {
+        id: promt_text;
+        anchors.left: parent.left; anchors.leftMargin: parent.width * 0.05;
+        anchors.top: parent.top; anchors.topMargin: parent.height * 0.1;
+        font.family: "Chunkfive";
+        font.pixelSize: parent.height * 0.1;
+        color: "white";
+    }
 }

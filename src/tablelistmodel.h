@@ -36,6 +36,8 @@ class TableListItem : public ListItem
             SaleRole,
             SaleCountRole,
             ReservedRole,
+            GuestsRole,
+            NameRole,
             RoleCount
         };
 
